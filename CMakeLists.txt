@@ -26,9 +26,18 @@ include_directories(
     ${catkin_INCLUDE_DIRS}
 )
 
-# add_executable(${PROJECT_NAME}_node src/dom_estimator_node.cpp)
+# DOM_LIBRARIES
+add_library(Dom SHARED
+    utils/database.cpp
+    utils/objects.cpp
+    utils/object.cpp
+)
 
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
-
+# dom_estimator_node
+add_executable(${PROJECT_NAME}_node
+    src/dom_estimator.cpp
+    src/dom_estimator_node.cpp)
+target_link_libraries(${PROJECT_NAME}_node
+    ${catkin_LIBRARIES}
+    Dom
+)
