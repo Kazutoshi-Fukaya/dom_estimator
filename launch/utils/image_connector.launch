@@ -2,7 +2,7 @@
 <launch>
     <arg name="config_path" default="$(find dom_estimator)/config" />
 
-	<!-- image_connector -->
+    <!-- image_connector -->
     <node pkg="dom_estimator" type="image_connector" name="image_connector" >
         <!-- rosparam -->
         <rosparam command="load" file="$(arg config_path)/params/robot_element.yaml" />

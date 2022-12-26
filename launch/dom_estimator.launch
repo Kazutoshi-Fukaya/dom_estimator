@@ -2,9 +2,9 @@
 <launch>
     <arg name="config_path" default="$(find dom_estimator)/config" />
 
-	<!-- ros bag -->
-	<!-- <include file="$(find dom_estimator)/launch/utils/20220224.launch" /> -->
-	<include file="$(find dom_estimator)/launch/utils/20220630.launch" />
+    <!-- ros bag -->
+    <!-- <include file="$(find dom_estimator)/launch/utils/20220224.launch" /> -->
+    <include file="$(find dom_estimator)/launch/utils/20220630.launch" />
 
     <!-- map server (for visualizing) -->
     <arg name="is_map" default="true" />
@@ -12,8 +12,8 @@
         <include file="$(find dom_estimator)/launch/utils/map_server.launch" />
     </group>
 
-	<!-- image_connector (for visualizing) -->
-	<include file="$(find dom_estimator)/launch/utils/image_connector.launch" />
+    <!-- image_connector (for visualizing) -->
+    <include file="$(find dom_estimator)/launch/utils/image_connector.launch" />
 
     <!-- dom_estimator -->
     <node pkg="dom_estimator" type="dom_estimator_node" name="dom_estimator_node" output="screen" >

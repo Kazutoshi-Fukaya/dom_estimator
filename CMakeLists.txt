@@ -59,8 +59,11 @@ target_link_libraries(${PROJECT_NAME}_node
 )
 
 # ========== ROS Utils ==========
-add_executable(image_connector  ros_utils/image_connector.cpp)
+add_executable(image_connector ros_utils/image_connector.cpp)
 target_link_libraries(image_connector 
     ${catkin_LIBRARIES}
     ${OpenCV_LIBRARIES}
 )
+
+add_executable(object_data_publisher ros_utils/object_data_publisher.cpp)
+target_link_libraries(object_data_publisher ${catkin_LIBRARIES})

@@ -15,4 +15,9 @@
         <arg name="unzip_detect"  value="true" />
     </include>
 
+    <!-- object_data_publisher -->
+    <include file="$(find dom_estimator)/launch/utils/object_data_publisher.launch" >
+        <arg name="roomba" value="$(arg roomba)" />
+    </include>
+
 </launch>
