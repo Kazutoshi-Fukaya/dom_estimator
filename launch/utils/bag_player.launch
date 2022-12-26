@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="roomba"    default="roomba1" 	/>
+    <arg name="wait_time" default="0.0" />
+    <arg name="file_name" default="$(env HOME)/bagfiles/experimental_file_20220224/$(arg roomba).bag" />
+
+    <!-- rosbag -->
+    <node pkg="rosbag" type="play" name="$(arg roomba)_play" args=" -d $(arg wait_time) $(arg file_name)" />
+
+    <!-- unzip -->
+    <include file="$(find dom_estimator)/launch/utils/image_unzipper.launch" >
+        <arg name="roomba"        value="$(arg roomba)" />
+        <arg name="unzip_theta_s" value="false" />
+        <arg name="unzip_color"   value="false" />
+        <arg name="unzip_detect"  value="true" />
+    </include>
+
+</launch>

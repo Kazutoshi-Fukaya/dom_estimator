@@ -85,7 +85,7 @@ void DomEstimator::load_objects()
             ROS_ERROR("out of range: %s", ex.what());
         }
     }
-	ifs.close();
+    ifs.close();
 }
 
 void DomEstimator::setup_object_texts()
@@ -115,7 +115,7 @@ void DomEstimator::setup_object_texts()
         // publisher
         ros::Publisher object_text_pub = nh_.advertise<jsk_rviz_plugins::OverlayText>(it->first->name,1);
         object_text_pubs_.emplace_back(object_text_pub);
-        
+
         // text
         jsk_rviz_plugins::OverlayText text;
         text.action = jsk_rviz_plugins::OverlayText::ADD;
@@ -123,12 +123,12 @@ void DomEstimator::setup_object_texts()
         text.height = height;
         if(index >= 5){
             text.left = left + width;
-			text.top = top*(index - 5);
-		}
-		else{
-			text.left = left;
+            text.top = top*(index - 5);
+        }
+        else{
+            text.left = left;
             text.top = top*index;
-		}
+        }
         text.font = font;
         text.line_width = line_width;
         text.text_size = text_size;
@@ -137,7 +137,7 @@ void DomEstimator::setup_object_texts()
         text.fg_color = get_color_msg(it->first->color.r,it->first->color.g,it->first->color.b,1.0);
         object_texts_.emplace_back(text);
         // index++;
-	}
+    }
 }
 
 void DomEstimator::setup_time_text()
@@ -179,7 +179,7 @@ void DomEstimator::setup_time_text()
 void DomEstimator::visualize_object()
 {
     ros::Time now_time = ros::Time::now();
-	visualization_msgs::MarkerArray markers;
+    visualization_msgs::MarkerArray markers;
     int marker_id = 0;
     for(auto it = database_->begin(); it != database_->end(); it++){
         for(auto sit = it->second->begin(); sit != it->second->end(); sit++){
@@ -188,7 +188,7 @@ void DomEstimator::visualize_object()
             marker.id = marker_id;
             marker.header.frame_id = MAP_FRAME_ID_;
             marker.header.stamp = now_time;
-			marker.type = visualization_msgs::Marker::CUBE;
+            marker.type = visualization_msgs::Marker::CUBE;
             marker.action = visualization_msgs::Marker::ADD;
             marker.lifetime = ros::Duration();
             marker.ns = it->first->name;
@@ -196,21 +196,21 @@ void DomEstimator::visualize_object()
             marker.scale.y = 0.4;
             marker.scale.z = 0.1;
             marker.pose = get_pose_msg(sit->x,sit->y);
-			marker.color.r = it->first->color.r;
+            marker.color.r = it->first->color.r;
             marker.color.g = it->first->color.g;
             marker.color.b = it->first->color.b;
-			// if(sit->has_observed_){
+            // if(sit->has_observed_){
                 // marker.color.a = 0.8*sit->credibility + 0.2;
-			// }
-			// else{
-				// marker.color.a = 0.2; 
-			// }
-			marker.color.a = 1.0;
-			markers.markers.emplace_back(marker);
-			marker_id++;
-		}
-	}
-	markers_pub_.publish(markers);
+            // }
+            // else{
+                // marker.color.a = 0.2;
+            // }
+            marker.color.a = 1.0;
+            markers.markers.emplace_back(marker);
+            marker_id++;
+        }
+    }
+    markers_pub_.publish(markers);
 }
 
 void DomEstimator::publish_object_texts()
@@ -224,7 +224,7 @@ void DomEstimator::publish_object_texts()
             }
         }
         object_text_pubs_[i].publish(object_texts_[i]);
-	}
+    }
 }
 
 void DomEstimator::publish_time_text()
