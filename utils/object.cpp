@@ -15,6 +15,14 @@ void Object::add_init_object(double _x,double _y)
     this->emplace_back(Element(time,credibility,x,y));
 }
 
+void Object::add_object(double _x,double _y,double _time,double _credibility)
+{
+    time = _time;
+    x = _x;
+    y = _y;
+    this->emplace_back(Element(_time,_credibility,_x,_y));
+}
+
 void Object::print_elements()
 {
     std::cout << "(X,Y,Time,Credibility): ("

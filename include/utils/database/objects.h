@@ -13,6 +13,7 @@ public:
 
 	// add
 	void add_init_object(double x,double y);
+	void add_object(double x,double y,double time,double credibility);
 
 	// for debug
 	void print_obejcts();

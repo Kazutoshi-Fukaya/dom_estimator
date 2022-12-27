@@ -36,7 +36,7 @@ private:
     void init();
     void publish_img();
 
-    // buffer
+    // node handler
     ros::NodeHandle nh_;
     ros::NodeHandle private_nh_;
 

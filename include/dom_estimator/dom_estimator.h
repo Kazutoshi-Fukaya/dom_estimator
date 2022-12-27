@@ -7,10 +7,10 @@
 #include <tf2/utils.h>
 #include <visualization_msgs/MarkerArray.h>
 
-
 #include <sstream>
 #include <fstream>
 
+#include "ros_utils/objects_data_subscribers.h"
 #include "utils/database/database.h"
 
 namespace dom_estimator
@@ -19,6 +19,7 @@ class DomEstimator
 {
 public:
     DomEstimator();
+	~DomEstimator();
     void process();
 
 private:
@@ -51,6 +52,9 @@ private:
 	// database
 	Database* database_;
 
+	// data subscribers
+	ObjectsDataSubscribers* objects_data_subs_;
+
 	// buffer
 	ros::Time start_time_;
 	std::vector<jsk_rviz_plugins::OverlayText> object_texts_;
@@ -59,6 +63,7 @@ private:
 
 	// params
 	std::string MAP_FRAME_ID_;
+	bool IS_DEBUG_;
 	int HZ_;
 };
 } // namespace dom_estimator

@@ -14,6 +14,7 @@ public:
 
 	// add
 	void add_init_object(double _x,double _y);
+	void add_object(double _x,double _y,double _time,double _credibility);
 
 	// for debug
 	void print_elements();

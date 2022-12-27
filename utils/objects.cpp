@@ -18,6 +18,13 @@ void Objects::add_init_object(double x,double y)
     this->emplace_back(object);
 }
 
+void Objects::add_object(double x,double y,double time,double credibility)
+{
+    Object object;
+    object.add_object(x,y,time,credibility);
+    this->emplace_back(object);   
+}
+
 void Objects::print_obejcts()
 {
     std::cout << "Name: " << name << std::endl;

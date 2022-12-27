@@ -5,15 +5,17 @@ using namespace dom_estimator;
 DomEstimator::DomEstimator() :
     private_nh_("~"),
     database_(new Database()),
+    objects_data_subs_(new ObjectsDataSubscribers(nh_,private_nh_,database_)),
     start_time_(ros::Time::now())
 {
     private_nh_.param("MAP_FRAME_ID",MAP_FRAME_ID_,{std::string("map")});
+    private_nh_.param("IS_DEBUG",IS_DEBUG_,{false});
     private_nh_.param("HZ",HZ_,{10});
 
     // database
     load_object_param();
-    load_objects();
-    database_->print_contents();
+    // load_objects();
+    // database_->print_contents();
 
     // text
     setup_object_texts();
@@ -21,6 +23,13 @@ DomEstimator::DomEstimator() :
 
     markers_pub_ = nh_.advertise<visualization_msgs::MarkerArray>("objects",1);
     time_pub_ = nh_.advertise<jsk_rviz_plugins::OverlayText>("time",1);
+}
+
+DomEstimator::~DomEstimator()
+{
+    if(IS_DEBUG_){
+        database_->print_contents();
+    }
 }
 
 void DomEstimator::load_object_param()

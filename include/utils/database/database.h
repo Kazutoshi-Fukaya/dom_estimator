@@ -15,7 +15,7 @@ public:
 
 	// add
 	void add_init_object(std::string name,double x,double y);
-
+	void add_object(std::string name,double x,double y,double time,double credibility);
 
 	// for debug
 	void print_contents();
