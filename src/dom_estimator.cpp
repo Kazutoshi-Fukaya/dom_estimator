@@ -6,15 +6,17 @@ DomEstimator::DomEstimator() :
     private_nh_("~"),
     database_(new Database()),
     objects_data_subs_(new ObjectsDataSubscribers(nh_,private_nh_,database_)),
-    start_time_(ros::Time::now())
+    start_time_(ros::Time::now()),
+    update_count_(0)
 {
     private_nh_.param("MAP_FRAME_ID",MAP_FRAME_ID_,{std::string("map")});
     private_nh_.param("IS_DEBUG",IS_DEBUG_,{false});
     private_nh_.param("HZ",HZ_,{10});
+    private_nh_.param("UPDATE_INTERVAL",UPDATE_INTERVAL_,{300.0});
 
     // database
     load_object_param();
-    // load_objects();
+    load_objects();
     // database_->print_contents();
 
     // text
@@ -185,6 +187,26 @@ void DomEstimator::setup_time_text()
     time_text_.fg_color = get_color_msg(color_r,color_g,color_b,color_a);
 }
 
+void DomEstimator::update()
+{
+    // update database (for object)
+    database_->update_objects();
+
+    // estimated dom
+    if(get_time() > UPDATE_INTERVAL_*(update_count_ + 1)){
+        database_->time_update();
+        update_count_++;
+
+        // delete all markers
+        visualization_msgs::MarkerArray markers;
+        visualization_msgs::Marker marker;
+        marker.header.frame_id = MAP_FRAME_ID_;
+        marker.action = visualization_msgs::Marker::DELETEALL;
+        markers.markers.emplace_back(marker);
+        markers_pub_.publish(markers);
+    }
+}
+
 void DomEstimator::visualize_object()
 {
     ros::Time now_time = ros::Time::now();
@@ -208,13 +230,10 @@ void DomEstimator::visualize_object()
             marker.color.r = it->first->color.r;
             marker.color.g = it->first->color.g;
             marker.color.b = it->first->color.b;
-            // if(sit->has_observed_){
-                // marker.color.a = 0.8*sit->credibility + 0.2;
-            // }
-            // else{
-                // marker.color.a = 0.2;
-            // }
-            marker.color.a = 1.0;
+            marker.color.a = 0.2;
+            if(sit->has_observed){
+                marker.color.a += 0.8*sit->credibility + 0.2;
+            }
             markers.markers.emplace_back(marker);
             marker_id++;
         }
@@ -298,7 +317,8 @@ void DomEstimator::process()
     std::cout << "=== Main Process ===" << std::endl;
     ros::Rate rate(HZ_);
     while(ros::ok()){
-        publish_msg();
+        publish_msg();  // publish msg
+        update();       // update
         ros::spinOnce();
         rate.sleep();
     }

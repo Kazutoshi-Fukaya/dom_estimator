@@ -22,6 +22,20 @@ void Database::add_object(std::string name,double x,double y,double time,double 
     }
 }
 
+void Database::update_objects()
+{
+    for(auto it = this->begin(); it != this->end(); it++){
+        it->second->update_obejct();
+    }
+}
+
+void Database::time_update()
+{
+    for(auto it = this->begin(); it != this->end(); it++){
+        it->second->time_update();   
+    }
+}
+
 // for debug
 void Database::print_contents()
 {

@@ -47,6 +47,7 @@ add_library(Dom SHARED
     utils/database.cpp
     utils/objects.cpp
     utils/object.cpp
+    utils/buffer_object.cpp
 )
 
 # Utils

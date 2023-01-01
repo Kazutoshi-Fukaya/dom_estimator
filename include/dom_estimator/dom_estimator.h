@@ -6,6 +6,7 @@
 #include <jsk_rviz_plugins/OverlayText.h>
 #include <tf2/utils.h>
 #include <visualization_msgs/MarkerArray.h>
+// #include
 
 #include <sstream>
 #include <fstream>
@@ -27,6 +28,9 @@ private:
 	void load_objects();		// csv file
 	void setup_object_texts();	// object texts
 	void setup_time_text();		// time text
+
+	// update
+	void update();
 
 	// publish
 	void visualize_object();
@@ -59,12 +63,13 @@ private:
 	ros::Time start_time_;
 	std::vector<jsk_rviz_plugins::OverlayText> object_texts_;
 	jsk_rviz_plugins::OverlayText time_text_;
-
+	int update_count_;
 
 	// params
 	std::string MAP_FRAME_ID_;
 	bool IS_DEBUG_;
 	int HZ_;
+	double UPDATE_INTERVAL_;
 };
 } // namespace dom_estimator
 

@@ -2,6 +2,7 @@
 #define OBJECTS_H_
 
 #include "utils/database/object.h"
+#include "utils/database/buffer_object.h"
 
 namespace dom_estimator
 {
@@ -15,8 +16,16 @@ public:
 	void add_init_object(double x,double y);
 	void add_object(double x,double y,double time,double credibility);
 
+	// update
+	void update_obejct();
+	void time_update();
+
 	// for debug
 	void print_obejcts();
+	void print_buffer_objects();
+
+	// buffer objects
+	BufferObject* buffer_object_;
 
 	// init param
 	std::string name;			// Object Name
@@ -27,7 +36,8 @@ public:
 
 	// param
 	int observations_count;	    // Number of observations
-	int spawn_count;			// Number of object spawn (kari)
+	int appearance_count;		// Number of appearance (kari)
+	int disappearance_count;	// Number of disappearance (kari)
     double dom; 				// Difficulty of Moving
 
 private:
