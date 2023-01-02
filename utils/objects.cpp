@@ -41,6 +41,7 @@ void Objects::add_object(double x,double y,double time,double credibility)
         // Add if within threshold
         if(dist_list.at(min_index) < distance_th){
             this->at(min_index).add_element(x,y,time,credibility);
+            dom += 0.05;
         }
     }
     // semi-dynamic object
@@ -72,11 +73,13 @@ void Objects::update_obejct()
 void Objects::time_update()
 {
     for(auto it = this->begin(); it != this->end();){
+        //  no observation and semi-dynamic
         if(!it->has_observed && !is_static){
             disappearance_count++;
             it = this->erase(it);
         }
         else{
+            it->has_observed = false;
             it++;
         }
     }
