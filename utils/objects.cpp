@@ -41,13 +41,16 @@ void Objects::add_object(double x,double y,double time,double credibility)
         // Add if within threshold
         if(dist_list.at(min_index) < distance_th){
             this->at(min_index).add_element(x,y,time,credibility);
-            dom += 0.05;
+            observations_count++;
+            // dom += 0.05;
+            // if(dom > 1.0) dom = 1.0;
         }
     }
     // semi-dynamic object
     else{
         if(dist_list.at(min_index) < distance_th){
             this->at(min_index).add_element(x,y,time,credibility);
+            observations_count++;
         }
         else{
             buffer_object_->add_buffer(time,credibility,x,y);
@@ -82,6 +85,30 @@ void Objects::time_update()
             it->has_observed = false;
             it++;
         }
+    }
+}
+
+void Objects::update_dom(double time)
+{
+    size_t object_size = this->size();
+
+    // Movement frequency evaluation value
+    double m_value = (double)(appearance_count + disappearance_count)/(time/60.0)/(double)object_size;   
+
+    // Observation count evaluation value
+    double o_value = (double)(observations_count)/(time/60.0)/(double)object_size;
+
+    // static object (for dom)
+    if(is_static){
+        dom = m_value;
+
+        // dom = 1.0/(1.0 + std::exp(-o_value));   // test
+    }
+    // semi-dynamic object (for dom)
+    else{
+        dom = m_value;
+        // dom = 1.0/(1.0 + std::exp(-(o_value - m_value)));    // test
+
     }
 }
 

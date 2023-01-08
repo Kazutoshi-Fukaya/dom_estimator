@@ -7,12 +7,13 @@ DomEstimator::DomEstimator() :
     database_(new Database()),
     objects_data_subs_(new ObjectsDataSubscribers(nh_,private_nh_,database_)),
     start_time_(ros::Time::now()),
-    update_count_(0)
+    update_count_(0), dom_count_(0)
 {
     private_nh_.param("MAP_FRAME_ID",MAP_FRAME_ID_,{std::string("map")});
     private_nh_.param("IS_DEBUG",IS_DEBUG_,{false});
     private_nh_.param("HZ",HZ_,{10});
     private_nh_.param("UPDATE_INTERVAL",UPDATE_INTERVAL_,{300.0});
+    private_nh_.param("DOM_INTERVAL",DOM_INTERVAL_,{100.0});
 
     // database
     load_object_param();
@@ -187,12 +188,30 @@ void DomEstimator::setup_time_text()
     time_text_.fg_color = get_color_msg(color_r,color_g,color_b,color_a);
 }
 
+void DomEstimator::save_objects()
+{
+    std::string record_file_path;
+    private_nh_.param("RECORD_FILE_PATH",record_file_path,{std::string("")});
+    std::string file_name = record_file_path + get_date();
+
+    static std::ofstream ofs;
+    for(auto it = database_->begin(); it != database_->end();it++){
+        for(auto sit = it->second->begin(); sit != it->second->end(); sit++){
+            ofs << it->second->name.c_str() << ","
+                << sit->time << "," 
+                << sit->x <<  "," 
+                << sit->y << std::endl;
+        }
+    }
+    ofs.close();
+}
+
 void DomEstimator::update()
 {
     // update database (for object)
     database_->update_objects();
 
-    // estimated dom
+    // object update (for time)
     if(get_time() > UPDATE_INTERVAL_*(update_count_ + 1)){
         database_->time_update();
         update_count_++;
@@ -205,6 +224,13 @@ void DomEstimator::update()
         markers.markers.emplace_back(marker);
         markers_pub_.publish(markers);
     }
+
+    // update dom
+    // if(get_time() > DOM_INTERVAL_*(dom_count_ + 1)){
+        // database_->update_dom(get_time());
+        // dom_count_++;
+    // }
+    database_->update_dom(get_time());
 }
 
 void DomEstimator::visualize_object()
@@ -308,6 +334,21 @@ std::vector<std::string> DomEstimator::split(std::string& input,char delimiter)
     std::vector<std::string> result;
     while(std::getline(stream,field,delimiter)) result.emplace_back(field);
     return result;
+}
+
+std::string DomEstimator::get_date()
+{
+    time_t t = time(nullptr);
+    const tm* localTime = localtime(&t);
+    std::stringstream s;
+    s << localTime->tm_year + 1900;
+    s << std::setw(2) << std::setfill('0') << localTime->tm_mon + 1;
+    s << std::setw(2) << std::setfill('0') << localTime->tm_mday;
+    s << std::setw(2) << std::setfill('0') << localTime->tm_hour;
+    s << std::setw(2) << std::setfill('0') << localTime->tm_min;
+    s << std::setw(2) << std::setfill('0') << localTime->tm_sec;
+
+    return s.str();
 }
 
 double DomEstimator::get_time() { return (ros::Time::now() - start_time_).toSec(); }

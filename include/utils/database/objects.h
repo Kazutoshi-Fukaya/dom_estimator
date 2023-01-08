@@ -19,6 +19,7 @@ public:
 	// update
 	void update_obejct();
 	void time_update();
+	void update_dom(double time);
 
 	// for debug
 	void print_obejcts();

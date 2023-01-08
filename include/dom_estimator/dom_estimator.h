@@ -29,6 +29,12 @@ private:
 	void setup_object_texts();	// object texts
 	void setup_time_text();		// time text
 
+	// save
+	void save_objects();	// save csv
+
+	// calc dom
+	void calc_dom();
+
 	// update
 	void update();
 
@@ -42,6 +48,8 @@ private:
 	std_msgs::ColorRGBA get_color_msg(double r,double g,double b,double a);
 	std_msgs::ColorRGBA get_background_color();
 	std::vector<std::string> split(std::string& input,char delimiter);
+	
+	std::string get_date();
 	double get_time();
 
     // node handler
@@ -64,12 +72,14 @@ private:
 	std::vector<jsk_rviz_plugins::OverlayText> object_texts_;
 	jsk_rviz_plugins::OverlayText time_text_;
 	int update_count_;
+	int dom_count_;
 
 	// params
 	std::string MAP_FRAME_ID_;
 	bool IS_DEBUG_;
 	int HZ_;
 	double UPDATE_INTERVAL_;
+	double DOM_INTERVAL_;
 };
 } // namespace dom_estimator
 

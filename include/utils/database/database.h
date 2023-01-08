@@ -20,6 +20,7 @@ public:
 	// update
 	void update_objects();
 	void time_update();
+	void update_dom(double time);
 
 	// for debug
 	void print_contents();

@@ -36,6 +36,13 @@ void Database::time_update()
     }
 }
 
+void Database::update_dom(double time)
+{
+    for(auto it = this->begin(); it != this->end(); it++){
+        it->second->update_dom(time);
+    }
+}
+
 // for debug
 void Database::print_contents()
 {
