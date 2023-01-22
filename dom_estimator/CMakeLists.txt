@@ -5,8 +5,9 @@ add_compile_options(-o2 -g -Wall)
 
 find_package(catkin REQUIRED COMPONENTS
     cv_bridge
+    dom_estimator_msgs
     geometry_msgs
-    multi_robot_msgs
+    multi_localizer_msgs
     nav_msgs
     object_color_detector_msgs
     object_detector_msgs
@@ -55,7 +56,6 @@ add_library(Utils SHARED
     ros_utils/objects_data_subscribers.cpp
 )
 
-
 # ==================== Main ====================
 # dom_estimator_node
 add_executable(${PROJECT_NAME}_node
@@ -69,8 +69,8 @@ target_link_libraries(${PROJECT_NAME}_node
 
 # ==================== ROS Utils ====================
 # image_connector
-add_executable(image_connector ros_utils/image_connector.cpp)
-target_link_libraries(image_connector 
+add_executable(images_connector ros_utils/images_connector.cpp)
+target_link_libraries(images_connector 
     ${catkin_LIBRARIES}
     ${OpenCV_LIBRARIES}
 )

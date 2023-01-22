@@ -1,4 +1,4 @@
-#include "ros_utils/objects_data_subscribers.h"
+#include "ros_utils/objects_data_subscribers/objects_data_subscribers.h"
 
 using namespace dom_estimator;
 
@@ -12,15 +12,13 @@ ObjectsDataSubscriber::ObjectsDataSubscriber(ros::NodeHandle nh,std::string robo
 	data_sub_ = nh_.subscribe(topic_name,1,&ObjectsDataSubscriber::data_callback,this);
 }
 
-multi_robot_msgs::ObjectsData ObjectsDataSubscriber::get_data() { return data_; }
+multi_localizer_msgs::ObjectsData ObjectsDataSubscriber::get_data() { return data_; }
 
-void ObjectsDataSubscriber::data_callback(const multi_robot_msgs::ObjectsDataConstPtr& msg)
+void ObjectsDataSubscriber::data_callback(const multi_localizer_msgs::ObjectsDataConstPtr& msg)
 {
 	data_= *msg;
-    
-    double credibility = msg->credibility;
-    for(const auto m : msg->objects){
-        database_->add_object(m.name,m.x,m.y,m.time,credibility);
+    for(const auto & data : msg->data){
+        database_->add_object(data.name,data.x,data.y,data.time,data.credibility);
     }
 }
 

@@ -4,7 +4,7 @@
 #include <ros/ros.h>
 
 #include "utils/database/database.h"
-#include "multi_robot_msgs/ObjectsData.h"
+#include "multi_localizer_msgs/ObjectsData.h"
 
 namespace dom_estimator
 {
@@ -14,10 +14,10 @@ public:
     ObjectsDataSubscriber();
     ObjectsDataSubscriber(ros::NodeHandle nh,std::string robot_name,Database* database);
 
-    multi_robot_msgs::ObjectsData get_data();
+    multi_localizer_msgs::ObjectsData get_data();
 
 private:
-    void data_callback(const multi_robot_msgs::ObjectsDataConstPtr& msg);
+    void data_callback(const multi_localizer_msgs::ObjectsDataConstPtr& msg);
 
     // node handler
     ros::NodeHandle nh_;
@@ -29,7 +29,7 @@ private:
     Database* database_;
 
     // buffer
-    multi_robot_msgs::ObjectsData data_;
+    multi_localizer_msgs::ObjectsData data_;
 };
 
 class ObjectsDataSubscribers : public std::vector<ObjectsDataSubscriber*>

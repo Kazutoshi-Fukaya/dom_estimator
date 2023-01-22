@@ -8,8 +8,9 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <depend>cv_bridge</depend>
+  <depend>dom_estimator_msgs</depend>
   <depend>geometry_msgs</depend>
-  <depend>multi_robot_msgs</depend>
+  <depend>multi_localizer_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>object_color_detector_msgs</depend>
   <depend>object_detector_msgs</depend>

@@ -1,68 +1,4 @@
-#include <ros/ros.h>
-#include <geometry_msgs/PoseWithCovarianceStamped.h>
-#include <geometry_msgs/PoseStamped.h>
-#include <geometry_msgs/TransformStamped.h>
-#include <nav_msgs/Odometry.h>
-#include <tf2_ros/buffer.h>
-#include <tf2_ros/transform_listener.h>
-#include <tf2_ros/transform_broadcaster.h>
-#include <tf2/utils.h>
-
-// Custom msg
-#include "object_detector_msgs/ObjectPositions.h"
-#include "multi_robot_msgs/ObjectsData.h"
-
-namespace dom_estimator
-{
-class ObjectDataPublisher
-{
-public:
-	ObjectDataPublisher();
-	void process();
-
-private:
-	void odom_callback(const nav_msgs::OdometryConstPtr& msg);
-    void pose_callback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& msg);
-    void obj_callback(const object_detector_msgs::ObjectPositionsConstPtr& msg);
-
-    void filter_ops_msg(object_detector_msgs::ObjectPositions input_ops,
-                        object_detector_msgs::ObjectPositions& output_ops);
-
-    // node handler
-    ros::NodeHandle nh_;
-    ros::NodeHandle private_nh_;
-
-    // subscriber
-    ros::Subscriber pose_sub_;
-    ros::Subscriber odom_sub_;
-    ros::Subscriber obj_sub_;
-
-    // publisher
-    ros::Publisher pose_pub_;
-    ros::Publisher obj_pub_;
-
-    // tf
-    boost::shared_ptr<tf2_ros::Buffer> buffer_;
-    boost::shared_ptr<tf2_ros::TransformListener> listener_;
-    boost::shared_ptr<tf2_ros::TransformBroadcaster> broadcaster_;
-
-    // buffer
-	ros::Time start_time_;
-	nav_msgs::Odometry odom_;
-    geometry_msgs::PoseStamped pose_;
-	bool is_first_;
-
-    // params
-    std::string ROBOT_NAME_;
-    std::string MAP_FRAME_ID_;
-    std::string BASE_LINK_FRAME_ID_;
-    bool PUBLISH_OBJ_MSG_;
-    double PROBABILITY_TH_;
-    double ANGLE_OF_VIEW_;
-    double VISIBLE_LOWER_DISTANCE_;
-    double VISIBLE_UPPER_DISTANCE_;
-};
-} // namespace dom_estimator
+#include "ros_utils/object_data_publisher/object_data_publisher.h"
 
 using namespace dom_estimator;
 
@@ -80,10 +16,10 @@ ObjectDataPublisher::ObjectDataPublisher() :
 
 	pose_sub_ = nh_.subscribe("pose_in",1,&ObjectDataPublisher::pose_callback,this);
     odom_sub_ = nh_.subscribe("odom_in",1,&ObjectDataPublisher::odom_callback,this);
-    obj_sub_ = nh_.subscribe("obj_in",1,&ObjectDataPublisher::obj_callback,this);
+    obj_sub_ = nh_.subscribe("obj_in",1,&ObjectDataPublisher::od_callback,this);
 
     pose_pub_ = nh_.advertise<geometry_msgs::PoseStamped>("pose_out",1);
-	obj_pub_ = nh_.advertise<multi_robot_msgs::ObjectsData>("obj_out",1);
+	obj_pub_ = nh_.advertise<multi_localizer_msgs::ObjectsData>("obj_out",1);
 
 	buffer_.reset(new tf2_ros::Buffer);
     listener_.reset(new tf2_ros::TransformListener(*buffer_));
@@ -136,56 +72,51 @@ void ObjectDataPublisher::pose_callback(const geometry_msgs::PoseWithCovarianceS
     broadcaster_->sendTransform(map_to_odom_transform);
 }
 
-void ObjectDataPublisher::obj_callback(const object_detector_msgs::ObjectPositionsConstPtr& msg)
+void ObjectDataPublisher::od_callback(const object_detector_msgs::ObjectPositionsConstPtr& msg)
 {
 	if(is_first_){
 		start_time_= msg->header.stamp;
 		is_first_ = false;
 	}
 
-	multi_robot_msgs::ObjectsData data;
-
-    // credibility
-    data.credibility = 1.0;
+	multi_localizer_msgs::ObjectsData objects;
 
     // header
-    data.header.frame_id = MAP_FRAME_ID_;
-    data.header.stamp = msg->header.stamp;
+    objects.header.frame_id = MAP_FRAME_ID_;
+    objects.header.stamp = msg->header.stamp;
 
     // pose
-    data.pose.name = ROBOT_NAME_;
-    data.pose.weight = 1.0;
-    data.pose.x = pose_.pose.position.x;
-    data.pose.y = pose_.pose.position.y;
-    data.pose.yaw = tf2::getYaw(pose_.pose.orientation);
+    objects.pose.name = ROBOT_NAME_;
+    objects.pose.weight = 1.0;
+    objects.pose.x = pose_.pose.position.x;
+    objects.pose.y = pose_.pose.position.y;
+    objects.pose.theta = tf2::getYaw(pose_.pose.orientation);
 
-    object_detector_msgs::ObjectPositions filtered_ops;
-    filter_ops_msg(*msg,filtered_ops);
-    // std::cout << msg->object_position.size() << ","
-            //   << filtered_ops.object_position.size() << std::endl;
-    if(filtered_ops.object_position.empty()) return;
+    object_detector_msgs::ObjectPositions filtered_od;
+    filter_od(*msg,filtered_od);
+    if(filtered_od.object_position.empty()) return;
 
     // objects
-    for(const auto &m : filtered_ops.object_position){
-		double dist = std::sqrt(m.x*m.x + m.z*m.z);
-        double angle = std::atan2(m.z,m.x) - 0.5*M_PI;
+    for(const auto & p : filtered_od.object_position){
+		double dist = std::sqrt(p.x*p.x + p.z*p.z);
+        double angle = std::atan2(p.z,p.x) - 0.5*M_PI;
 
-        multi_robot_msgs::ObjectData object;
-        object.name = m.Class;
+        multi_localizer_msgs::ObjectData object;
+        object.name = p.Class;
         object.time = (msg->header.stamp - start_time_).toSec();
+        object.credibility = 1.0;
 		double yaw = tf2::getYaw(pose_.pose.orientation);
         object.x = pose_.pose.position.x + dist*std::cos(yaw + angle);
-        object.y = pose_.pose.position.y + dist*std::sin(yaw + angle);
-        data.objects.emplace_back(object);
+        object.y = pose_.pose.position.y + dist*std::sin(yaw + angle);   
+        objects.data.emplace_back(object);
     }
-    obj_pub_.publish(data);
+    obj_pub_.publish(objects);
 }
 
-void ObjectDataPublisher::filter_ops_msg(object_detector_msgs::ObjectPositions input_ops,
-                                         object_detector_msgs::ObjectPositions& output_ops)
+void ObjectDataPublisher::filter_od(object_detector_msgs::ObjectPositions input_od,object_detector_msgs::ObjectPositions& output_od)
 {
-    output_ops.header = input_ops.header;
-    output_ops.object_position.clear();
+    output_od.header = input_od.header;
+    output_od.object_position.clear();
 
     auto is_visible_range = [this](object_detector_msgs::ObjectPosition op) -> bool
     {
@@ -208,8 +139,8 @@ void ObjectDataPublisher::filter_ops_msg(object_detector_msgs::ObjectPositions i
         return false;
     };
 
-    for(const auto &inp_op : input_ops.object_position){
-        if(is_visible_range(inp_op)) output_ops.object_position.emplace_back(inp_op);
+    for(const auto & p : input_od.object_position){
+        if(is_visible_range(p)) output_od.object_position.emplace_back(p);
     }
 }
 

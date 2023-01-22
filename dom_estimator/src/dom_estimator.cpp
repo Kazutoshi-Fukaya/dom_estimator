@@ -29,7 +29,7 @@ DomEstimator::DomEstimator() :
 
     markers_pub_ = nh_.advertise<visualization_msgs::MarkerArray>("objects",1);
     time_pub_ = nh_.advertise<jsk_rviz_plugins::OverlayText>("time",1);
-    dom_pub_ = nh_.advertise<multi_robot_msgs::Doms>("dom",1);
+    dom_pub_ = nh_.advertise<dom_estimator_msgs::Doms>("dom",1);
 }
 
 DomEstimator::~DomEstimator()
@@ -312,10 +312,10 @@ void DomEstimator::publish_time_text()
 
 void DomEstimator::publish_dom()
 {
-    multi_robot_msgs::Doms doms;
+    dom_estimator_msgs::Doms doms;
     doms.header.stamp = ros::Time::now();
     for(auto it = database_->begin(); it != database_->end(); it++){
-        multi_robot_msgs::Dom dom;
+        dom_estimator_msgs::Dom dom;
         dom.name = it->second->name;
         dom.dom = it->second->dom;
         doms.doms.emplace_back(dom);

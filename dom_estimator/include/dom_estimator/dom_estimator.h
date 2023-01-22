@@ -10,9 +10,9 @@
 #include <sstream>
 #include <fstream>
 
-#include "multi_robot_msgs/Doms.h"
+#include "dom_estimator_msgs/Doms.h"
 
-#include "ros_utils/objects_data_subscribers.h"
+#include "ros_utils/objects_data_subscribers/objects_data_subscribers.h"
 #include "utils/database/database.h"
 #include "utils/dom_recorder/dom_recorder.h"
 

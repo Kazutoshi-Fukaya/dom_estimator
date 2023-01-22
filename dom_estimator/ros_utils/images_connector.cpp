@@ -1,52 +1,4 @@
-#include <ros/ros.h>
-#include <sensor_msgs/Image.h>
-#include <cv_bridge/cv_bridge.h>
-#include <opencv2/opencv.hpp>
-
-namespace dom_estimator
-{
-class ImageSubscriber
-{
-public:
-    ImageSubscriber();
-    ImageSubscriber(ros::NodeHandle _nh,std::string robot_name);
-
-    cv::Mat get_img();
-
-private:
-    void img_callback(const sensor_msgs::ImageConstPtr& msg);
-
-    // node handle
-    ros::NodeHandle nh_;
-
-    // subscriber
-    ros::Subscriber img_sub_;
-
-    // buffer
-    cv::Mat img_;
-};
-
-class ImageConnector : public std::vector<ImageSubscriber*>
-{
-public:
-    ImageConnector();
-    void process();
-
-private:
-    void init();
-    void publish_img();
-
-    // node handler
-    ros::NodeHandle nh_;
-    ros::NodeHandle private_nh_;
-
-    // publisher
-    ros::Publisher img_pub_;
-
-    // param
-    int HZ_;
-};
-}
+#include "ros_utils/images_connector/images_connector.h"
 
 using namespace dom_estimator;
 
@@ -76,8 +28,7 @@ void ImageSubscriber::img_callback(const sensor_msgs::ImageConstPtr& msg)
 cv::Mat ImageSubscriber::get_img() { return img_; }
 
 // ImageConnector
-ImageConnector::ImageConnector() :
-    private_nh_("~")
+ImagesConnector::ImagesConnector() : private_nh_("~")
 {
     private_nh_.param("HZ",HZ_,{10});
 
@@ -86,7 +37,7 @@ ImageConnector::ImageConnector() :
     init();
 }
 
-void ImageConnector::init()
+void ImagesConnector::init()
 {
     this->clear();
     std::string robot_element_list_name;
@@ -114,7 +65,7 @@ void ImageConnector::init()
     }
 }
 
-void ImageConnector::publish_img()
+void ImagesConnector::publish_img()
 {
     if(this->at(0)->get_img().empty()) return;
 
@@ -141,7 +92,7 @@ void ImageConnector::publish_img()
     img_pub_.publish(img_msg);
 }
 
-void ImageConnector::process()
+void ImagesConnector::process()
 {
     ros::Rate rate(HZ_);
     while(ros::ok()){
@@ -153,8 +104,8 @@ void ImageConnector::process()
 
 int main(int argc,char** argv)
 {
-    ros::init(argc,argv,"image_connector");
-    ImageConnector image_connector;
-    image_connector.process();
+    ros::init(argc,argv,"images_connector");
+    ImagesConnector images_connector;
+    images_connector.process();
     return 0;
 }
