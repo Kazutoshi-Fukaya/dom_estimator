@@ -12,24 +12,24 @@ namespace dom_estimator
 class Object : public std::vector<Element>
 {
 public:
-	Object();
+    Object();
 
-	// add
-	void add_init_object(double _x,double _y);
-	void add_object(double _x,double _y,double _time,double _credibility);
-	void add_element(double _x,double _y,double _time,double _credibility);
+    // add
+    void add_init_object(double _x,double _y);
+    void add_object(double _x,double _y,double _time,double _credibility);
+    void add_element(double _x,double _y,double _time,double _credibility);
 
-	double get_distance(double _x,double _y);
+    double get_distance(double _x,double _y);
 
-	// for debug
-	void print_elements();
+    // for debug
+    void print_elements();
 
-	// params
-	bool has_observed;			// Observed or not
-	double time;				// Time the element was last added
-    double credibility;			// Credibility estimated from accumulated elements
-    double x;					// x-coordinate estimated from accumulated elements
-    double y;					// y-coordinate estimated from accumulated elements
+    // params
+    bool has_observed;          // Observed or not
+    double time;                // Time the element was last added
+    double credibility;         // Credibility estimated from accumulated elements
+    double x;                   // x-coordinate estimated from accumulated elements
+    double y;                   // y-coordinate estimated from accumulated elements
 
 private:
 };

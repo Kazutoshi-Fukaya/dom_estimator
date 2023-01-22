@@ -51,4 +51,4 @@ private:
 };
 } // namespace dom_estimator
 
-#endif	// IMAGES_CONNECTOR_H_
+#endif  // IMAGES_CONNECTOR_H_

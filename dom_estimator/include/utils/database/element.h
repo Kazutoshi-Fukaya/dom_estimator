@@ -14,7 +14,7 @@ public:
     Element(double _time,double _credibility,double _x,double _y) :
         time(_time), credibility(_credibility), x(_x), y(_y) {}
 
-	// for debug
+    // for debug
     void print_element()
     {
         std::cout << "    -[Time,Credibility,X,Y]: ["

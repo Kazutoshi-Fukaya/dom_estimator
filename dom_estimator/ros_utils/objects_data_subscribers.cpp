@@ -6,17 +6,17 @@ using namespace dom_estimator;
 ObjectsDataSubscriber::ObjectsDataSubscriber(){}
 
 ObjectsDataSubscriber::ObjectsDataSubscriber(ros::NodeHandle nh,std::string robot_name,Database* database) :
-	nh_(nh), database_(database)
+    nh_(nh), database_(database)
 {
-	std::string topic_name = robot_name + "/objects_data";
-	data_sub_ = nh_.subscribe(topic_name,1,&ObjectsDataSubscriber::data_callback,this);
+    std::string topic_name = robot_name + "/objects_data";
+    data_sub_ = nh_.subscribe(topic_name,1,&ObjectsDataSubscriber::data_callback,this);
 }
 
 multi_localizer_msgs::ObjectsData ObjectsDataSubscriber::get_data() { return data_; }
 
 void ObjectsDataSubscriber::data_callback(const multi_localizer_msgs::ObjectsDataConstPtr& msg)
 {
-	data_= *msg;
+    data_= *msg;
     for(const auto & data : msg->data){
         database_->add_object(data.name,data.x,data.y,data.time,data.credibility);
     }
@@ -26,11 +26,11 @@ void ObjectsDataSubscriber::data_callback(const multi_localizer_msgs::ObjectsDat
 ObjectsDataSubscribers::ObjectsDataSubscribers() {}
 
 ObjectsDataSubscribers::ObjectsDataSubscribers(ros::NodeHandle nh,ros::NodeHandle private_nh,Database* database) :
-	nh_(nh), private_nh_(private_nh) { init(database); }
+    nh_(nh), private_nh_(private_nh) { init(database); }
 
 void ObjectsDataSubscribers::init(Database* database)
 {
-	this->clear();
+    this->clear();
     std::string robot_element_list_name;
     private_nh_.param("ROBOT_ELEMENT_LIST",robot_element_list_name,{std::string("robot_element_list")});
     XmlRpc::XmlRpcValue robot_element_list;
