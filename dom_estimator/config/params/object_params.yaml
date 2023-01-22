@@ -45,7 +45,7 @@ object_params:
       dom: 0.5
 
     - name: bench
-      condition: Semi-dynamic
+      condition: Static
       r: 1.0
       g: 0.0
       b: 0.0

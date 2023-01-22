@@ -100,14 +100,14 @@ void Objects::update_dom(double time)
 
     // static object (for dom)
     if(is_static){
-        dom = m_value;
+        // dom = m_value;
 
-        // dom = 1.0/(1.0 + std::exp(-o_value));   // test
+        dom = 1.0/(1.0 + std::exp(-2.0*o_value));   // test
     }
     // semi-dynamic object (for dom)
     else{
-        dom = m_value;
-        // dom = 1.0/(1.0 + std::exp(-(o_value - m_value)));    // test
+        // dom = m_value;
+        dom = 1.0/(1.0 + std::exp(-(o_value/20.0 - m_value)));    // test
 
     }
 }

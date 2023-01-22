@@ -1,13 +1,14 @@
 <?xml version="1.0"?>
 <launch>
     <arg name="file_path"   default="$(env HOME)/bagfiles/experimental_file_20220630" />
+    <arg name="wait_time"   default="0.0" />
 
     <!-- roomba1 -->
     <arg name="is_roomba1" default="true" />
     <group if="$(arg is_roomba1)" >
         <include file="$(find dom_estimator)/launch/utils/bag_player.launch" >
             <arg name="roomba"    value="roomba1" />
-            <arg name="wait_time" value="0.0" />
+            <arg name="wait_time" value="$(arg wait_time)" />
             <arg name="file_name" value="$(arg file_path)/roomba1.bag" />
         </include>
     </group>
@@ -17,7 +18,7 @@
     <group if="$(arg is_roomba2)" >
         <include file="$(find dom_estimator)/launch/utils/bag_player.launch" >
             <arg name="roomba"    value="roomba2" />
-            <arg name="wait_time" value="0.0" />
+            <arg name="wait_time" value="$(arg wait_time)" />
             <arg name="file_name" value="$(arg file_path)/roomba2.bag" />
         </include>
     </group>
@@ -27,7 +28,7 @@
     <group if="$(arg is_roomba3)" >
         <include file="$(find dom_estimator)/launch/utils/bag_player.launch" >
             <arg name="roomba"    value="roomba3" />
-            <arg name="wait_time" value="0.0" />
+            <arg name="wait_time" value="$(arg wait_time)" />
             <arg name="file_name" value="$(arg file_path)/roomba3.bag" />
         </include>
     </group>
@@ -37,7 +38,7 @@
     <group if="$(arg is_roomba4)" >
         <include file="$(find dom_estimator)/launch/utils/bag_player.launch" >
             <arg name="roomba"    value="roomba4" />
-            <arg name="wait_time" value="0.0" />
+            <arg name="wait_time" value="$(arg wait_time)" />
             <arg name="file_name" value="$(arg file_path)/roomba4.bag" />
         </include>
     </group>
@@ -47,7 +48,7 @@
     <group if="$(arg is_roomba5)" >
         <include file="$(find dom_estimator)/launch/utils/bag_player.launch" >
             <arg name="roomba"    value="roomba5" />
-            <arg name="wait_time" value="0.0" />
+            <arg name="wait_time" value="$(arg wait_time)" />
             <arg name="file_name" value="$(arg file_path)/roomba5.bag" />
         </include>
     </group>
@@ -57,7 +58,7 @@
     <group if="$(arg is_roomba6)" >
         <include file="$(find dom_estimator)/launch/utils/bag_player.launch" >
             <arg name="roomba"    value="roomba6" />
-            <arg name="wait_time" value="0.0" />
+            <arg name="wait_time" value="$(arg wait_time)" />
             <arg name="file_name" value="$(arg file_path)/roomba6.bag" />
         </include>
     </group>

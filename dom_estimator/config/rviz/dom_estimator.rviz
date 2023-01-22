@@ -3,8 +3,7 @@ Panels:
     Help Height: 78
     Name: Displays
     Property Tree Widget:
-      Expanded:
-        - /TF1/Status1
+      Expanded: ~
       Splitter Ratio: 0.5
     Tree Height: 513
   - Class: rviz/Selection
@@ -399,36 +398,10 @@ Visualization Manager:
       Unreliable: false
       Value: true
     - Class: rviz/TF
-      Enabled: true
+      Enabled: false
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        map:
-          Value: true
-        roomba1/base_link:
-          Value: true
-        roomba1/odom:
-          Value: true
-        roomba2/base_link:
-          Value: true
-        roomba2/odom:
-          Value: true
-        roomba3/base_link:
-          Value: true
-        roomba3/odom:
-          Value: true
-        roomba4/base_link:
-          Value: true
-        roomba4/odom:
-          Value: true
-        roomba5/base_link:
-          Value: true
-        roomba5/odom:
-          Value: true
-        roomba6/base_link:
-          Value: true
-        roomba6/odom:
-          Value: true
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
@@ -436,12 +409,9 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        roomba2/odom:
-          roomba2/base_link:
-            map:
-              {}
+        {}
       Update Interval: 0
-      Value: true
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48

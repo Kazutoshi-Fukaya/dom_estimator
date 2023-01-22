@@ -11,9 +11,12 @@ DomEstimator::DomEstimator() :
 {
     private_nh_.param("MAP_FRAME_ID",MAP_FRAME_ID_,{std::string("map")});
     private_nh_.param("IS_DEBUG",IS_DEBUG_,{false});
+    private_nh_.param("IS_RECORD",IS_RECORD_,{false});
     private_nh_.param("HZ",HZ_,{10});
     private_nh_.param("UPDATE_INTERVAL",UPDATE_INTERVAL_,{300.0});
     private_nh_.param("DOM_INTERVAL",DOM_INTERVAL_,{100.0});
+
+    if(IS_RECORD_) recorder_ = new DomRecorder();
 
     // database
     load_object_param();
@@ -26,12 +29,20 @@ DomEstimator::DomEstimator() :
 
     markers_pub_ = nh_.advertise<visualization_msgs::MarkerArray>("objects",1);
     time_pub_ = nh_.advertise<jsk_rviz_plugins::OverlayText>("time",1);
+    dom_pub_ = nh_.advertise<multi_robot_msgs::Doms>("dom",1);
 }
 
 DomEstimator::~DomEstimator()
 {
     if(IS_DEBUG_){
         database_->print_contents();
+    }
+
+    if(IS_RECORD_){
+        std::string record_path;
+        private_nh_.param("RECORD_PATH",record_path,{std::string("")});
+        recorder_->set_path(record_path);
+        recorder_->output_data();
     }
 }
 
@@ -70,6 +81,11 @@ void DomEstimator::load_object_param()
             ObjectParam* object_param (new ObjectParam(name,condition,Color(r,g,b)));
             Objects* objects (new Objects(name,condition,dom,dist_th));
             database_->insert(std::map<ObjectParam*,Objects*>::value_type(object_param,objects));
+
+            if(IS_RECORD_){
+                std::vector<DomRecord> doms;
+                recorder_->insert(std::map<std::string,std::vector<DomRecord>>::value_type(name,doms));
+            }
         }
     }
 }
@@ -276,6 +292,13 @@ void DomEstimator::publish_object_texts()
                 std::string text_msg = it->first->name + "\t (dom: " + std::to_string(it->second->dom) + ")";
                 object_texts_[i].text = text_msg;
             }
+
+            if(IS_RECORD_){
+                std::string name = it->first->name;
+                double time = get_time();
+                double dom = it->second->dom;
+                recorder_->add_data(name,DomRecord(time,dom));
+            }
         }
         object_text_pubs_[i].publish(object_texts_[i]);
     }
@@ -287,11 +310,25 @@ void DomEstimator::publish_time_text()
     time_pub_.publish(time_text_);
 }
 
+void DomEstimator::publish_dom()
+{
+    multi_robot_msgs::Doms doms;
+    doms.header.stamp = ros::Time::now();
+    for(auto it = database_->begin(); it != database_->end(); it++){
+        multi_robot_msgs::Dom dom;
+        dom.name = it->second->name;
+        dom.dom = it->second->dom;
+        doms.doms.emplace_back(dom);
+    }
+    dom_pub_.publish(doms);
+}
+
 void DomEstimator::publish_msg()
 {
     visualize_object();
     publish_object_texts();
     publish_time_text();
+    publish_dom();
 }
 
 geometry_msgs::Pose DomEstimator::get_pose_msg(double x,double y)

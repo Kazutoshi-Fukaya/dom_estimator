@@ -32,9 +32,7 @@ public:
     double y;					// y-coordinate estimated from accumulated elements
 
 private:
-
 };
 } // namespace dom_estimator
-
 
 #endif  // OBJECT_H_

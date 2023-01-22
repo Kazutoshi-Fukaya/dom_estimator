@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <launch>
     <arg name="config_path" default="$(find dom_estimator)/config" />
+    <arg name="wait_time"   default="0.0" />
 
     <!-- ros bag -->
     <!-- <include file="$(find dom_estimator)/launch/utils/20220224.launch" /> -->
@@ -11,6 +12,7 @@
         <arg name="is_roomba4" value="true" />
         <arg name="is_roomba5" value="true" />
         <arg name="is_roomba6" value="true" />
+        <arg name="wait_time"  value="$(arg wait_time)" />S
     </include>
 
     <!-- map server (for visualizing) -->
@@ -25,8 +27,12 @@
     <!-- dom_estimator -->
     <node pkg="dom_estimator" type="dom_estimator_node" name="dom_estimator_node" output="screen" >
         <!-- params -->
-        <param name="IS_DEBUG"     value="true" />
-        <param name="OBJECTS_FILE" value="$(arg config_path)/init_objects/20220224.csv" />
+        <param name="IS_DEBUG"        value="true" />
+        <param name="OBJECTS_FILE"    value="$(arg config_path)/init_objects/20220224.csv" />
+        <param name="UPDATE_INTERVAL" value="150.0" />
+
+        <param name="IS_RECORD"       value="true" />
+        <param name="RECORD_PATH"     value="$(find dom_estimator)/record/" />
 
         <!-- rosparams -->
         <rosparam command="load" file="$(arg config_path)/params/object_params.yaml" />
