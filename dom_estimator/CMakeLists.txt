@@ -53,10 +53,10 @@ add_library(Dom SHARED
 
 # Utils
 add_library(Utils SHARED
-    ros_utils/objects_data_subscribers.cpp
+    src/objects_data_subscriber.cpp
+    src/objects_data_subscribers.cpp
 )
 
-# ==================== Main ====================
 # dom_estimator_node
 add_executable(${PROJECT_NAME}_node
     src/dom_estimator.cpp
@@ -66,15 +66,3 @@ target_link_libraries(${PROJECT_NAME}_node
     Dom
     Utils
 )
-
-# ==================== ROS Utils ====================
-# image_connector
-add_executable(images_connector ros_utils/images_connector.cpp)
-target_link_libraries(images_connector 
-    ${catkin_LIBRARIES}
-    ${OpenCV_LIBRARIES}
-)
-
-# object_data_publisher
-add_executable(object_data_publisher ros_utils/object_data_publisher.cpp)
-target_link_libraries(object_data_publisher ${catkin_LIBRARIES})

@@ -386,16 +386,10 @@ Visualization Manager:
       Unreliable: false
       Value: true
     - Class: rviz/TF
-      Enabled: true
+      Enabled: false
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        map:
-          Value: true
-        roomba3/base_link:
-          Value: true
-        roomba3/odom:
-          Value: true
       Marker Alpha: 1
       Marker Scale: 1
       Name: TF
@@ -403,12 +397,9 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        map:
-          roomba3/odom:
-            roomba3/base_link:
-              {}
+        {}
       Update Interval: 0
-      Value: true
+      Value: false
     - Class: rviz/Image
       Enabled: true
       Image Topic: /roomba3/detected_image

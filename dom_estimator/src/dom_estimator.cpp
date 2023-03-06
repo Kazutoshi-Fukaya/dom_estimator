@@ -7,14 +7,15 @@ DomEstimator::DomEstimator() :
     database_(new Database()),
     objects_data_subs_(new ObjectsDataSubscribers(nh_,private_nh_,database_)),
     start_time_(ros::Time::now()),
-    update_count_(0), dom_count_(0)
+    update_count_(0), dom_count_(0),
+    time_count_(0)
 {
     private_nh_.param("MAP_FRAME_ID",MAP_FRAME_ID_,{std::string("map")});
     private_nh_.param("IS_DEBUG",IS_DEBUG_,{false});
     private_nh_.param("IS_RECORD",IS_RECORD_,{false});
     private_nh_.param("HZ",HZ_,{10});
     private_nh_.param("UPDATE_INTERVAL",UPDATE_INTERVAL_,{300.0});
-    private_nh_.param("DOM_INTERVAL",DOM_INTERVAL_,{100.0});
+    // private_nh_.param("DOM_INTERVAL",DOM_INTERVAL_,{100.0});
 
     if(IS_RECORD_) recorder_ = new DomRecorder();
 
@@ -30,6 +31,7 @@ DomEstimator::DomEstimator() :
     markers_pub_ = nh_.advertise<visualization_msgs::MarkerArray>("objects",1);
     time_pub_ = nh_.advertise<jsk_rviz_plugins::OverlayText>("time",1);
     dom_pub_ = nh_.advertise<dom_estimator_msgs::Doms>("dom",1);
+    object_map_pub_ = nh_.advertise<multi_localizer_msgs::ObjectMap>("object_map",1);
 }
 
 DomEstimator::~DomEstimator()
@@ -41,8 +43,9 @@ DomEstimator::~DomEstimator()
     if(IS_RECORD_){
         std::string record_path;
         private_nh_.param("RECORD_PATH",record_path,{std::string("")});
-        recorder_->set_path(record_path);
+        recorder_->set_path(record_path + "dom/");
         recorder_->output_data();
+        save_objects(record_path + "objects/" + get_date() + ".csv");
     }
 }
 
@@ -204,13 +207,9 @@ void DomEstimator::setup_time_text()
     time_text_.fg_color = get_color_msg(color_r,color_g,color_b,color_a);
 }
 
-void DomEstimator::save_objects()
+void DomEstimator::save_objects(std::string record_file)
 {
-    std::string record_file_path;
-    private_nh_.param("RECORD_FILE_PATH",record_file_path,{std::string("")});
-    std::string file_name = record_file_path + get_date();
-
-    static std::ofstream ofs;
+    std::ofstream ofs(record_file);
     for(auto it = database_->begin(); it != database_->end();it++){
         for(auto sit = it->second->begin(); sit != it->second->end(); sit++){
             ofs << it->second->name.c_str() << ","
@@ -292,16 +291,23 @@ void DomEstimator::publish_object_texts()
                 std::string text_msg = it->first->name + "\t (dom: " + std::to_string(it->second->dom) + ")";
                 object_texts_[i].text = text_msg;
             }
+        }
+        object_text_pubs_[i].publish(object_texts_[i]);
+    }
 
-            if(IS_RECORD_){
+    for(auto it = database_->begin(); it != database_->end(); it++){
+        if(IS_RECORD_){
+            // if(time_count_*30.0 < get_time()){
+            if(time_count_%300 == 0){
                 std::string name = it->first->name;
                 double time = get_time();
                 double dom = it->second->dom;
                 recorder_->add_data(name,DomRecord(time,dom));
+                // time_count_++;
             }
         }
-        object_text_pubs_[i].publish(object_texts_[i]);
     }
+    time_count_++;
 }
 
 void DomEstimator::publish_time_text()
@@ -310,17 +316,38 @@ void DomEstimator::publish_time_text()
     time_pub_.publish(time_text_);
 }
 
-void DomEstimator::publish_dom()
+void DomEstimator::publish_object()
 {
     dom_estimator_msgs::Doms doms;
-    doms.header.stamp = ros::Time::now();
+    multi_localizer_msgs::ObjectMap object_map;
+    ros::Time now_time = ros::Time::now();
+    doms.header.stamp = now_time;
+    object_map.header.frame_id = MAP_FRAME_ID_;
+    object_map.header.stamp = now_time;
     for(auto it = database_->begin(); it != database_->end(); it++){
+        // dom
         dom_estimator_msgs::Dom dom;
         dom.name = it->second->name;
         dom.dom = it->second->dom;
+        dom.object_size = it->second->size();
+        dom.appearance_count = it->second->appearance_count;
+        dom.disappearance_count = it->second->disappearance_count;
+        dom.observations_count = it->second->observations_count;
         doms.doms.emplace_back(dom);
+
+        // object data
+        for(auto sit = it->second->begin(); sit != it->second->end(); sit++){
+            multi_localizer_msgs::ObjectData data;
+            data.name = it->second->name;
+            data.credibility = sit->credibility;
+            data.time = get_time();
+            data.x = sit->x;
+            data.y = sit->y;
+            object_map.data.emplace_back(data);
+        }
     }
     dom_pub_.publish(doms);
+    object_map_pub_.publish(object_map);
 }
 
 void DomEstimator::publish_msg()
@@ -328,7 +355,7 @@ void DomEstimator::publish_msg()
     visualize_object();
     publish_object_texts();
     publish_time_text();
-    publish_dom();
+    publish_object();
 }
 
 geometry_msgs::Pose DomEstimator::get_pose_msg(double x,double y)

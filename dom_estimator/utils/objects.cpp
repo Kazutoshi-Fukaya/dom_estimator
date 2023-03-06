@@ -88,6 +88,7 @@ void Objects::time_update()
     }
 }
 
+// dom evaluation equation
 void Objects::update_dom(double time)
 {
     size_t object_size = this->size();

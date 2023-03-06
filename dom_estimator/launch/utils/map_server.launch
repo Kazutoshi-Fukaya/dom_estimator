@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-    <arg name="config_path" default="$(find dom_estimator)/config" />
-
-    <!--map_server -->
-    <node pkg="map_server" type="map_server" name="map" args="$(arg config_path)/map/static_map.yaml" />
-
-</launch>

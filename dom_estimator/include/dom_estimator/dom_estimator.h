@@ -10,9 +10,10 @@
 #include <sstream>
 #include <fstream>
 
+#include "multi_localizer_msgs/ObjectMap.h"
 #include "dom_estimator_msgs/Doms.h"
 
-#include "ros_utils/objects_data_subscribers/objects_data_subscribers.h"
+#include "objects_data_subscribers/objects_data_subscribers.h"
 #include "utils/database/database.h"
 #include "utils/dom_recorder/dom_recorder.h"
 
@@ -32,10 +33,7 @@ private:
     void setup_time_text();     // time text
 
     // save
-    void save_objects();        // save csv
-
-    // calc dom
-    void calc_dom();
+    void save_objects(std::string record_file);        // save csv
 
     // update
     void update();
@@ -44,7 +42,7 @@ private:
     void visualize_object();
     void publish_object_texts();
     void publish_time_text();
-    void publish_dom();
+    void publish_object();
     void publish_msg();
 
     geometry_msgs::Pose get_pose_msg(double x,double y);
@@ -64,6 +62,7 @@ private:
     std::vector<ros::Publisher> object_text_pubs_;
     ros::Publisher time_pub_;
     ros::Publisher dom_pub_;
+    ros::Publisher object_map_pub_;
 
     // database
     Database* database_;
@@ -80,6 +79,7 @@ private:
     jsk_rviz_plugins::OverlayText time_text_;
     int update_count_;
     int dom_count_;
+    int time_count_;
 
     // params
     std::string MAP_FRAME_ID_;
@@ -87,7 +87,7 @@ private:
     bool IS_RECORD_;
     int HZ_;
     double UPDATE_INTERVAL_;
-    double DOM_INTERVAL_;
+    // double DOM_INTERVAL_;
 };
 } // namespace dom_estimator
 
