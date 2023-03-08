@@ -9,7 +9,7 @@
         <arg name="roomba"               value="roomba3" />
         <arg name="wait_time"            value="$(arg wait_time)" />
         <arg name="publish_objects_data" value="true" />
-        <arg name="file_name"            value="$(arg file_path)/roomba3.bag" />
+        <arg name="file_path"            value="$(arg file_path)/" />
     </include>
 
     <!-- map server (for visualizing) -->
