@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<launch>
+	<arg name="is_debug"    default="false" />
+    <arg name="is_record"   default="false" />
+	<arg name="config_path" default="$(find dom_estimator)/config" />
+
+	<!-- dom_estimator_node -->
+    <node pkg="dom_estimator" type="dom_estimator_node" name="dom_estimator_node" output="screen" >
+        <!-- params -->
+        <param name="OBJECTS_FILE"    value="$(arg config_path)/init_objects/20220224.csv" />
+        <param name="IS_DEBUG"        value="$(arg is_debug)" />
+        <param name="HZ"              value="10" />
+        <param name="UPDATE_INTERVAL" value="150.0" />
+
+        <!-- params (for record) -->
+        <param name="IS_RECORD"       value="$(arg is_record)" />
+        <param name="RECORD_PATH"     value="$(find dom_estimator)/record/" />
+
+        <!-- rosparams -->
+        <rosparam command="load" file="$(arg config_path)/params/object_params.yaml" />
+        <rosparam command="load" file="$(arg config_path)/params/robot_element.yaml" />
+    </node>
+
+</launch>
