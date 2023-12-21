@@ -18,6 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
     tf2_geometry_msgs
     tf2_ros
     visualization_msgs
+    object_identifier_msgs
 )
 
 # OpenCV
@@ -49,6 +50,8 @@ add_library(Dom SHARED
     utils/objects.cpp
     utils/object.cpp
     utils/buffer_object.cpp
+    utils/simple_database.cpp
+    utils/simple_object.cpp
 )
 
 # Utils
@@ -65,4 +68,13 @@ target_link_libraries(${PROJECT_NAME}_node
     ${catkin_LIBRARIES}
     Dom
     Utils
+)
+
+# dom_estimator_mono_node
+add_executable(dom_estimator_mono_node
+    src/dom_estimator_mono.cpp
+    src/dom_estimator_mono_node.cpp)
+target_link_libraries(dom_estimator_mono_node
+    ${catkin_LIBRARIES}
+    Dom
 )
