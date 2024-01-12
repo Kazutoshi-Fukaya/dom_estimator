@@ -12,6 +12,7 @@
 
 #include "multi_localizer_msgs/ObjectMap.h"
 #include "dom_estimator_msgs/Doms.h"
+#include "object_identifier_msgs/ObjectPositionsWithID.h"
 
 #include "objects_data_subscribers/objects_data_subscribers.h"
 #include "utils/database/database.h"
@@ -53,6 +54,9 @@ private:
     std::string get_date();
     double get_time();
 
+    // callback
+    void ops_with_id_callback(const object_identifier_msgs::ObjectPositionsWithIDConstPtr& msg);
+
     // node handler
     ros::NodeHandle nh_;
     ros::NodeHandle private_nh_;
@@ -64,6 +68,9 @@ private:
     ros::Publisher dom_pub_;
     ros::Publisher object_map_pub_;
 
+    // subscriber
+    ros::Subscriber ops_with_id_in_;
+
     // database
     Database* database_;
 
@@ -71,7 +78,7 @@ private:
     DomRecorder* recorder_;
 
     // data subscribers
-    ObjectsDataSubscribers* objects_data_subs_;
+    // ObjectsDataSubscribers* objects_data_subs_;
 
     // buffer
     ros::Time start_time_;

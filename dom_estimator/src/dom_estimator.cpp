@@ -5,7 +5,7 @@ using namespace dom_estimator;
 DomEstimator::DomEstimator() :
     private_nh_("~"),
     database_(new Database()),
-    objects_data_subs_(new ObjectsDataSubscribers(nh_,private_nh_,database_)),
+    // objects_data_subs_(new ObjectsDataSubscribers(nh_,private_nh_,database_)),
     start_time_(ros::Time::now()),
     update_count_(0), dom_count_(0),
     time_count_(0)
@@ -46,6 +46,14 @@ DomEstimator::~DomEstimator()
         recorder_->set_path(record_path + "dom/");
         recorder_->output_data();
         save_objects(record_path + "objects/" + get_date() + ".csv");
+    }
+}
+
+void DomEstimator::ops_with_id_callback(const object_identifier_msgs::ObjectPositionsWithIDConstPtr& msg)
+{
+    double time = msg->header.stamp.toSec();
+    for(const auto & data : msg->object_positions_with_id){
+        database_->add_object(data.id,data.x,data.y,time,data.probability); //probability = credibility
     }
 }
 
