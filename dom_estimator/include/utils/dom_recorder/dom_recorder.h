@@ -23,17 +23,27 @@ public:
 private:
 };
 
-class DomRecorder : public std::map<std::string,std::vector<DomRecord>>
+// class DomRecorder : public std::map<std::string,std::vector<DomRecord>>
+class DomRecorder : public std::map<int,std::vector<DomRecord>>
 {
 public:
     DomRecorder() {}
 
     void set_path(std::string path) { RECORD_PATH_ = path; }
 
-    void add_data(std::string name,DomRecord dom_record)
+    // void add_data(std::string name,DomRecord dom_record)
+    // {
+    //     for(auto it = this->begin(); it != this->end(); it++){
+    //         if(it->first == name){
+    //             it->second.emplace_back(dom_record);
+    //         }
+    //     }
+    // }
+
+    void add_data(int id,DomRecord dom_record)
     {
         for(auto it = this->begin(); it != this->end(); it++){
-            if(it->first == name){
+            if(it->first == id){
                 it->second.emplace_back(dom_record);
             }
         }
@@ -42,7 +52,8 @@ public:
     void output_data()
     {
         for(auto it = this->begin(); it != this->end(); it++){
-            std::string file_name = RECORD_PATH_ + it->first + ".csv";
+            // std::string file_name = RECORD_PATH_ + it->first + ".csv";
+            std::string file_name = RECORD_PATH_ + std::to_string(it->first) + ".csv";
             std::ofstream ofs(file_name);
             for(auto sit = it->second.begin(); sit != it->second.end(); sit++){
                 ofs << sit->time << "," << sit->dom << std::endl;

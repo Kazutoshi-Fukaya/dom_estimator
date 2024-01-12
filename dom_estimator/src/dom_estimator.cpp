@@ -89,7 +89,8 @@ void DomEstimator::load_object_param()
 
             if(IS_RECORD_){
                 std::vector<DomRecord> doms;
-                recorder_->insert(std::map<std::string,std::vector<DomRecord>>::value_type(name,doms));
+                // recorder_->insert(std::map<std::string,std::vector<DomRecord>>::value_type(name,doms));
+                recorder_->insert(std::map<int,std::vector<DomRecord>>::value_type(id,doms));
             }
         }
     }
@@ -301,10 +302,12 @@ void DomEstimator::publish_object_texts()
         if(IS_RECORD_){
             // if(time_count_*30.0 < get_time()){
             if(time_count_%300 == 0){
-                std::string name = it->first->name;
+                // std::string name = it->first->name;
+                int id = it->second->id;
                 double time = get_time();
                 double dom = it->second->dom;
-                recorder_->add_data(name,DomRecord(time,dom));
+                // recorder_->add_data(name,DomRecord(time,dom));
+                recorder_->add_data(id,DomRecord(time,dom));
                 // time_count_++;
             }
         }
