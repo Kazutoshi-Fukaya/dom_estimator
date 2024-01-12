@@ -61,19 +61,21 @@ void DomEstimator::load_object_param()
 
     ROS_ASSERT(object_params.getType() == XmlRpc::XmlRpcValue::TypeArray);
     for(int i = 0; i < object_params.size(); i++){
-        if(!object_params[i]["name"].valid() || !object_params[i]["condition"].valid() ||
+        if(!object_params[i]["id"].valid() || !object_params[i]["name"].valid() || !object_params[i]["condition"].valid() ||
            !object_params[i]["r"].valid() || !object_params[i]["g"].valid() || !object_params[i]["b"].valid() ||
            !object_params[i]["dist_th"].valid() || !object_params[i]["dom"].valid()){
             ROS_WARN("%s is valid", yaml_file_name.c_str());
             return;
         }
-        if(object_params[i]["name"].getType() == XmlRpc::XmlRpcValue::TypeString &&
+        if(object_params[i]["id"].getType() == XmlRpc::XmlRpcValue::TypeInt &&
+           object_params[i]["name"].getType() == XmlRpc::XmlRpcValue::TypeString &&
            object_params[i]["condition"].getType() == XmlRpc::XmlRpcValue::TypeString &&
            object_params[i]["r"].getType() == XmlRpc::XmlRpcValue::TypeDouble &&
            object_params[i]["g"].getType() == XmlRpc::XmlRpcValue::TypeDouble &&
            object_params[i]["b"].getType() == XmlRpc::XmlRpcValue::TypeDouble &&
            object_params[i]["dist_th"].getType() == XmlRpc::XmlRpcValue::TypeDouble &&
            object_params[i]["dom"].getType() == XmlRpc::XmlRpcValue::TypeDouble){
+            int id = static_cast<int>(object_params[i]["id"]);
             std::string name = static_cast<std::string>(object_params[i]["name"]);
             std::string condition = static_cast<std::string>(object_params[i]["condition"]);
             double r = static_cast<double>(object_params[i]["r"]);
@@ -82,7 +84,7 @@ void DomEstimator::load_object_param()
             double dist_th = static_cast<double>(object_params[i]["dist_th"]);
             double dom = static_cast<double>(object_params[i]["dom"]);
             ObjectParam* object_param (new ObjectParam(name,condition,Color(r,g,b)));
-            Objects* objects (new Objects(name,condition,dom,dist_th));
+            Objects* objects (new Objects(id,name,condition,dom,dist_th));
             database_->insert(std::map<ObjectParam*,Objects*>::value_type(object_param,objects));
 
             if(IS_RECORD_){

@@ -10,7 +10,7 @@ class Objects : public std::vector<Object>
 {
 public:
     Objects();
-    Objects(std::string name,std::string _condition,double _init_dom,double _distance_th);
+    Objects(int _id,std::string _name,std::string _condition,double _init_dom,double _distance_th);
 
     // add
     void add_init_object(double x,double y);
@@ -29,7 +29,8 @@ public:
     BufferObject* buffer_object_;
 
     // init param
-    std::string name;           // Object Name
+    int id;                     // Object ID
+    std::string name;           // Object Name (unused?)
     std::string condition;      // Static or Dynamic
     bool is_static;             // Static or Dynamic
     double init_dom;            // Init Difficulty of Moving

@@ -4,12 +4,12 @@ using namespace dom_estimator;
 
 Objects::Objects() :
     buffer_object_(new BufferObject),
-    name(std::string("")), condition(std::string("")), is_static(NULL), init_dom(0.0), distance_th(0.0),
+    id(-1), name(std::string("")), condition(std::string("")), is_static(NULL), init_dom(0.0), distance_th(0.0),
     observations_count(0), appearance_count(0), disappearance_count(0), dom(0.0) {}
 
-Objects::Objects(std::string _name,std::string _condition,double _init_dom,double _distance_th) :
+Objects::Objects(int _id,std::string _name,std::string _condition,double _init_dom,double _distance_th) :
     buffer_object_(new BufferObject),
-    name(_name), condition(_condition), is_static(str_to_bool(condition)), init_dom(_init_dom), distance_th(_distance_th),
+    id(_id), name(_name), condition(_condition), is_static(str_to_bool(condition)), init_dom(_init_dom), distance_th(_distance_th),
     observations_count(0), appearance_count(0), disappearance_count(0), dom(init_dom) {}
 
 void Objects::add_init_object(double x,double y)
@@ -115,6 +115,7 @@ void Objects::update_dom(double time)
 
 void Objects::print_obejcts()
 {
+    std::cout << "ID: " << id << std::endl;
     std::cout << "Name: " << name << std::endl;
     std::cout << "Condition: " << condition << std::endl;
     std::cout << "Difficulty of Moving: " << dom << std::endl;

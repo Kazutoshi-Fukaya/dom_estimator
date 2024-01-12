@@ -1,0 +1,14 @@
+# object params with id
+
+# ============================
+# parameters
+#
+# id: object id
+# name: object name
+# condition: Semi-dynamic or Static (unused?)
+# r: red
+# g: green
+# b: blue
+# d_th: distance threshhold
+# ============================
+
