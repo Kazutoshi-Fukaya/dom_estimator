@@ -106,11 +106,19 @@ void DomEstimator::load_objects()
     while(std::getline(ifs,line)){
         std::vector<std::string> strvec = split(line,',');
         try{
-            std::string name = static_cast<std::string>(strvec[0]);
-            // double time = static_cast<double>(std::stod(strvec[1]));
-            double x = static_cast<double>(std::stod(strvec[2]));
-            double y = static_cast<double>(std::stod(strvec[3]));
-            database_->add_init_object(name,x,y);   // time = 0.0, credibility = 1.0
+            // std::string name = static_cast<std::string>(strvec[0]);
+            // // double time = static_cast<double>(std::stod(strvec[1]));
+            // double x = static_cast<double>(std::stod(strvec[2]));
+            // double y = static_cast<double>(std::stod(strvec[3]));
+
+            int id = static_cast<int>(std::stoi(strvec[0]));
+            std::string name = static_cast<std::string>(strvec[1]);
+            double time = static_cast<double>(std::stod(strvec[2]));
+            double dom = static_cast<double>(std::stod(strvec[3]));     // unused?
+            double x = static_cast<double>(std::stod(strvec[4]));
+            double y = static_cast<double>(std::stod(strvec[5]));
+            // database_->add_init_object(name,x,y);   // time = 0.0, credibility = 1.0
+            database_->add_init_object(id,x,y);   // time = 0.0, credibility = 1.0
         }
         catch(const std::invalid_argument& ex){
             ROS_ERROR("invalid: %s", ex.what());

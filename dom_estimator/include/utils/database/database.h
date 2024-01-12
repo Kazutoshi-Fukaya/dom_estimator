@@ -14,8 +14,10 @@ public:
     Database();
 
     // add
-    void add_init_object(std::string name,double x,double y);
-    void add_object(std::string name,double x,double y,double time,double credibility);
+    // void add_init_object(std::string name,double x,double y);
+    // void add_object(std::string name,double x,double y,double time,double credibility);
+    void add_init_object(int id,double x,double y);
+    void add_object(int id,double x,double y,double time,double credibility);
 
     // update
     void update_objects();
