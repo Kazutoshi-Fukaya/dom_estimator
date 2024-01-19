@@ -65,6 +65,7 @@ void Database::update_dom(double time)
 void Database::print_contents()
 {
     for(auto it = this->begin(); it != this->end(); it++){
-        it->second->print_obejcts();
+        // it->second->print_obejcts();
+        it->second->print_elements();
     }
 }

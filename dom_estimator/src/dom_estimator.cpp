@@ -92,8 +92,11 @@ void DomEstimator::load_object_param()
             double dist_th = static_cast<double>(object_params[i]["dist_th"]);
             double dom = static_cast<double>(object_params[i]["dom"]);
             ObjectParam* object_param (new ObjectParam(name,condition,Color(r,g,b)));
-            Objects* objects (new Objects(id,name,condition,dom,dist_th));
-            database_->insert(std::map<ObjectParam*,Objects*>::value_type(object_param,objects));
+            // Objects* objects (new Objects(id,name,condition,dom,dist_th));
+            // database_->insert(std::map<ObjectParam*,Objects*>::value_type(object_param,objects));
+            ObjectWithID* object_with_id (new ObjectWithID(id,name,condition,dom,dist_th));
+            database_->insert(std::map<ObjectParam*,ObjectWithID*>::value_type(object_param,object_with_id));
+            // std::cout << "id: " << id << std::endl;
 
             if(IS_RECORD_){
                 std::vector<DomRecord> doms;
@@ -102,6 +105,7 @@ void DomEstimator::load_object_param()
             }
         }
     }
+    // std::cout << "size: " << database_->size() << std::endl;
 }
 
 void DomEstimator::load_objects()
@@ -127,6 +131,7 @@ void DomEstimator::load_objects()
             double y = static_cast<double>(std::stod(strvec[5]));
             // database_->add_init_object(name,x,y);   // time = 0.0, credibility = 1.0
             database_->add_init_object(id,x,y);   // time = 0.0, credibility = 1.0
+            // std::cout << "load: " << name << std::endl;
         }
         catch(const std::invalid_argument& ex){
             ROS_ERROR("invalid: %s", ex.what());
@@ -267,36 +272,68 @@ void DomEstimator::update()
     database_->update_dom(get_time());
 }
 
+// void DomEstimator::visualize_object()
+// {
+//     ros::Time now_time = ros::Time::now();
+//     visualization_msgs::MarkerArray markers;
+//     int marker_id = 0;
+//     for(auto it = database_->begin(); it != database_->end(); it++){
+//         for(auto sit = it->second->begin(); sit != it->second->end(); sit++){
+//             // marker
+//             visualization_msgs::Marker marker;
+//             marker.id = marker_id;
+//             marker.header.frame_id = MAP_FRAME_ID_;
+//             marker.header.stamp = now_time;
+//             marker.type = visualization_msgs::Marker::CUBE;
+//             marker.action = visualization_msgs::Marker::ADD;
+//             marker.lifetime = ros::Duration();
+//             marker.ns = it->first->name;
+//             marker.scale.x = 0.4;
+//             marker.scale.y = 0.4;
+//             marker.scale.z = 0.1;
+//             marker.pose = get_pose_msg(sit->x,sit->y);
+//             marker.color.r = it->first->color.r;
+//             marker.color.g = it->first->color.g;
+//             marker.color.b = it->first->color.b;
+//             marker.color.a = 0.2;
+//             if(sit->has_observed){
+//                 marker.color.a += 0.8*sit->credibility + 0.2;
+//             }
+//             markers.markers.emplace_back(marker);
+//             marker_id++;
+//         }
+//     }
+//     markers_pub_.publish(markers);
+// }
+
 void DomEstimator::visualize_object()
 {
     ros::Time now_time = ros::Time::now();
     visualization_msgs::MarkerArray markers;
     int marker_id = 0;
     for(auto it = database_->begin(); it != database_->end(); it++){
-        for(auto sit = it->second->begin(); sit != it->second->end(); sit++){
-            // marker
-            visualization_msgs::Marker marker;
-            marker.id = marker_id;
-            marker.header.frame_id = MAP_FRAME_ID_;
-            marker.header.stamp = now_time;
-            marker.type = visualization_msgs::Marker::CUBE;
-            marker.action = visualization_msgs::Marker::ADD;
-            marker.lifetime = ros::Duration();
-            marker.ns = it->first->name;
-            marker.scale.x = 0.4;
-            marker.scale.y = 0.4;
-            marker.scale.z = 0.1;
-            marker.pose = get_pose_msg(sit->x,sit->y);
-            marker.color.r = it->first->color.r;
-            marker.color.g = it->first->color.g;
-            marker.color.b = it->first->color.b;
-            marker.color.a = 0.2;
-            if(sit->has_observed){
-                marker.color.a += 0.8*sit->credibility + 0.2;
-            }
-            markers.markers.emplace_back(marker);
-            marker_id++;
+        // marker
+        visualization_msgs::Marker marker;
+        marker.id = marker_id;
+        marker.header.frame_id = MAP_FRAME_ID_;
+        marker.header.stamp = now_time;
+        marker.type = visualization_msgs::Marker::CUBE;
+        marker.action = visualization_msgs::Marker::ADD;
+        marker.lifetime = ros::Duration();
+        marker.ns = it->first->name;
+        marker.scale.x = 0.4;
+        marker.scale.y = 0.4;
+        marker.scale.z = 0.1;
+        marker.pose = get_pose_msg(it->second->x,it->second->y);
+        marker.color.r = it->first->color.r;
+        marker.color.g = it->first->color.g;
+        marker.color.b = it->first->color.b;
+        marker.color.a = 0.2;
+        if(it->second->has_observed){
+            marker.color.a += 0.8*it->second->credibility + 0.2;
         }
+        markers.markers.emplace_back(marker);
+        marker_id++;
     }
     markers_pub_.publish(markers);
 }

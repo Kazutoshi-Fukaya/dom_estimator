@@ -4,11 +4,13 @@
 #include <map>
 
 #include "utils/object_param/object_param.h"
-#include "utils/database/objects.h"
+// #include "utils/database/objects.h"
+#include "utils/database/object_with_id.h"
 
 namespace dom_estimator
 {
-class Database : public std::map<ObjectParam*,Objects*>
+// class Database : public std::map<ObjectParam*,Objects*>
+class Database : public std::map<ObjectParam*,ObjectWithID*>
 {
 public:
     Database();
