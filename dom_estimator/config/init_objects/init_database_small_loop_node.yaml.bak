@@ -1,0 +1,74 @@
+timestamp: 2024-01-12 14:00:47.640859
+MAP_FRAME: /map
+NODE:
+- id: 0
+  type: intersection
+  point:
+    x: 0.0
+    y: 0.0
+  label: ''
+- id: 1
+  type: intersection
+  point:
+    x: 0.0
+    y: 1.0
+  label: ''
+EDGE:
+- node_id:
+  - 0
+  - 1
+timestamp: 2024-01-16 15:04:14.028803
+MAP_FRAME: /map
+NODE:
+- id: 0
+  type: intersection
+  point:
+    x: 0.55
+    y: -2.474
+  label: ''
+- id: 1
+  type: intersection
+  point:
+    x: 0.556
+    y: -2.038
+  label: ''
+- id: 2
+  type: intersection
+  point:
+    x: 0.539
+    y: -1.613
+  label: ''
+- id: 3
+  type: intersection
+  point:
+    x: 0.534
+    y: -1.246
+  label: ''
+- id: 4
+  type: intersection
+  point:
+    x: 18.567
+    y: -4.033
+  label: ''
+- id: 5
+  type: intersection
+  point:
+    x: 18.534
+    y: -3.649
+  label: ''
+- id: 6
+  type: intersection
+  point:
+    x: 18.548
+    y: -3.264
+  label: ''
+- id: 7
+  type: intersection
+  point:
+    x: 18.623
+    y: -2.866
+  label: ''
+EDGE:
+- node_id:
+  - 0
+  - 1

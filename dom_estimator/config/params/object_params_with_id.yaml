@@ -12,3 +12,75 @@
 # d_th: distance threshhold
 # ============================
 
+object_params:
+    - id: 0
+      name: trash_can
+      condition: Semi-dynamic
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      dist_th: 1.00
+      dom: 0.5
+
+    - id: 1
+      name: trash_can
+      condition: Semi-dynamic
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      dist_th: 1.00
+      dom: 0.5
+
+    - id: 2
+      name: trash_can
+      condition: Semi-dynamic
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      dist_th: 1.00
+      dom: 0.5
+
+    - id: 3
+      name: trash_can
+      condition: Semi-dynamic
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      dist_th: 1.00
+      dom: 0.5
+
+    - id: 4
+      name: trash_can
+      condition: Semi-dynamic
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      dist_th: 1.00
+      dom: 0.5
+
+    - id: 5
+      name: trash_can
+      condition: Semi-dynamic
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      dist_th: 1.00
+      dom: 0.5
+
+    - id: 6
+      name: trash_can
+      condition: Semi-dynamic
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      dist_th: 1.00
+      dom: 0.5
+
+    - id: 7
+      name: trash_can
+      condition: Semi-dynamic
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      dist_th: 1.00
+      dom: 0.5
