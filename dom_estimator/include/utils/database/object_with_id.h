@@ -48,7 +48,7 @@ public:
     int observations_count;     // Number of observations
     int appearance_count;       // Number of appearance (kari)
     int disappearance_count;    // Number of disappearance (kari)
-    double total_distance_traveled; // Total distance traveled
+    double total_distance_traveled; // Total distance traveled (m)
     double dom;                 // Difficulty of Moving
 
     bool has_observed;          // Observed or not

@@ -46,28 +46,36 @@ void ObjectWithID::time_update()
 }
 
 // dom evaluation equation
-void ObjectWithID::update_dom(double time)
+// void ObjectWithID::update_dom(double time)
+// {
+//     size_t object_size = this->size();
+
+//     // Movement frequency evaluation value
+//     double m_value = (double)(appearance_count + disappearance_count)/(time/60.0)/(double)object_size;   
+
+//     // Observation count evaluation value
+//     double o_value = (double)(observations_count)/(time/60.0)/(double)object_size;
+
+//     // static object (for dom)
+//     if(is_static){
+//         // dom = m_value;
+
+//         dom = 1.0/(1.0 + std::exp(-2.0*o_value));   // test
+//     }
+//     // semi-dynamic object (for dom)
+//     else{
+//         // dom = m_value;
+//         dom = 1.0/(1.0 + std::exp(-(o_value/20.0 - m_value)));    // test
+
+//     }
+// }
+
+void ObjectWithID::update_dom(double _time)
 {
-    size_t object_size = this->size();
-
-    // Movement frequency evaluation value
-    double m_value = (double)(appearance_count + disappearance_count)/(time/60.0)/(double)object_size;   
-
-    // Observation count evaluation value
-    double o_value = (double)(observations_count)/(time/60.0)/(double)object_size;
-
-    // static object (for dom)
-    if(is_static){
-        // dom = m_value;
-
-        dom = 1.0/(1.0 + std::exp(-2.0*o_value));   // test
-    }
-    // semi-dynamic object (for dom)
-    else{
-        // dom = m_value;
-        dom = 1.0/(1.0 + std::exp(-(o_value/20.0 - m_value)));    // test
-
-    }
+    // _time: total time(sec)
+    double coef = 1.0;
+    double s = total_distance_traveled/(_time/60.0); // speed
+    dom = 1.0 - std::exp(-s*coef);
 }
 
 double ObjectWithID::get_distance(double _x,double _y)

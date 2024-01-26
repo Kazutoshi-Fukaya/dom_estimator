@@ -7,7 +7,8 @@
 	<!-- dom_estimator_node -->
     <node pkg="dom_estimator" type="dom_estimator_node" name="dom_estimator_node" output="screen" >
         <!-- params -->
-        <param name="OBJECTS_FILE"    value="$(arg config_path)/init_objects/20220224.csv" />
+        <!-- <param name="OBJECTS_FILE"    value="$(arg config_path)/init_objects/20220224.csv" /> -->
+        <param name="OBJECTS_FILE"    value="$(arg config_path)/init_objects/init_database_small_loop.csv" />
         <param name="IS_DEBUG"        value="$(arg is_debug)" />
         <param name="HZ"              value="10" />
         <param name="UPDATE_INTERVAL" value="150.0" />
@@ -17,7 +18,8 @@
         <param name="RECORD_PATH"     value="$(find dom_estimator)/record/" />
 
         <!-- rosparams -->
-        <rosparam command="load" file="$(arg config_path)/params/object_params.yaml" />
+        <!-- <rosparam command="load" file="$(arg config_path)/params/object_params.yaml" /> -->
+        <rosparam command="load" file="$(arg config_path)/params/object_params_with_id.yaml" />
         <rosparam command="load" file="$(arg config_path)/params/robot_element.yaml" />
     </node>
 
