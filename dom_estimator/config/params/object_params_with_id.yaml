@@ -84,3 +84,147 @@ object_params:
       b: 0.0
       dist_th: 1.00
       dom: 0.5
+
+    - id: 8
+      name: trash_can
+      condition: Semi-dynamic
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      dist_th: 1.00
+      dom: 0.5
+
+    - id: 9
+      name: trash_can
+      condition: Semi-dynamic
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      dist_th: 1.00
+      dom: 0.5
+
+    - id: 10
+      name: trash_can
+      condition: Semi-dynamic
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      dist_th: 1.00
+      dom: 0.5
+
+    - id: 11
+      name: trash_can
+      condition: Semi-dynamic
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      dist_th: 1.00
+      dom: 0.5
+
+    - id: 12
+      name: trash_can
+      condition: Semi-dynamic
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      dist_th: 1.00
+      dom: 0.5
+
+    - id: 13
+      name: trash_can
+      condition: Semi-dynamic
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      dist_th: 1.00
+      dom: 0.5
+
+    - id: 14
+      name: trash_can
+      condition: Semi-dynamic
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      dist_th: 1.00
+      dom: 0.5
+
+    - id: 15
+      name: trash_can
+      condition: Semi-dynamic
+      r: 0.0
+      g: 1.0
+      b: 0.0
+      dist_th: 1.00
+      dom: 0.5
+
+    - id: 16
+      name: fire_hydrant
+      condition: Semi-dynamic
+      r: 0.0
+      g: 0.0
+      b: 1.0
+      dist_th: 1.00
+      dom: 0.5
+
+    # - id: 17
+    #   name: fire_hydrant
+    #   condition: Semi-dynamic
+    #   r: 0.0
+    #   g: 0.0
+    #   b: 1.0
+    #   dist_th: 1.00
+    #   dom: 0.5
+
+    - id: 18
+      name: fire_hydrant
+      condition: Semi-dynamic
+      r: 0.0
+      g: 0.0
+      b: 1.0
+      dist_th: 1.00
+      dom: 0.5
+
+    # - id: 19
+    #   name: fire_hydrant
+    #   condition: Semi-dynamic
+    #   r: 0.0
+    #   g: 0.0
+    #   b: 1.0
+    #   dist_th: 1.00
+    #   dom: 0.5
+
+    - id: 20
+      name: fire_hydrant
+      condition: Semi-dynamic
+      r: 0.0
+      g: 0.0
+      b: 1.0
+      dist_th: 1.00
+      dom: 0.5
+
+    # - id: 21
+    #   name: fire_hydrant
+    #   condition: Semi-dynamic
+    #   r: 0.0
+    #   g: 0.0
+    #   b: 1.0
+    #   dist_th: 1.00
+    #   dom: 0.5
+    
+    - id: 22
+      name: fire_hydrant
+      condition: Semi-dynamic
+      r: 0.0
+      g: 0.0
+      b: 1.0
+      dist_th: 1.00
+      dom: 0.5
+
+    - id: 23
+      name: fire_hydrant
+      condition: Semi-dynamic
+      r: 0.0
+      g: 0.0
+      b: 1.0
+      dist_th: 1.00
+      dom: 0.5
