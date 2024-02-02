@@ -31,11 +31,29 @@ void Database::add_init_object(int id,double x,double y)
     }
 }
 
-void Database::add_object(int id,double x,double y,double time,double credibility)
+void Database::add_observed_object(int id,double x,double y,double time,double credibility,double dom)
 {
     for(auto it = this->begin(); it != this->end(); it++){
         if(it->second->id == id){
-            it->second->add_object(x,y,time,credibility);
+            it->second->add_observed_object(x,y,time,credibility,dom);
+        }
+    }
+}
+
+// void Database::add_object(int id,double x,double y,double time,double credibility)
+// {
+//     for(auto it = this->begin(); it != this->end(); it++){
+//         if(it->second->id == id){
+//             it->second->add_object(x,y,time,credibility);
+//         }
+//     }
+// }
+
+void Database::add_object(int id,double x,double y,double time,double credibility,double error)
+{
+    for(auto it = this->begin(); it != this->end(); it++){
+        if(it->second->id == id){
+            it->second->add_object(x,y,time,credibility,error);
         }
     }
 }
@@ -47,10 +65,17 @@ void Database::update_objects()
     }
 }
 
-void Database::time_update()
+// void Database::time_update()
+// {
+//     for(auto it = this->begin(); it != this->end(); it++){
+//         it->second->time_update();   
+//     }
+// }
+
+void Database::time_update(double time)
 {
     for(auto it = this->begin(); it != this->end(); it++){
-        it->second->time_update();   
+        it->second->time_update(time);
     }
 }
 

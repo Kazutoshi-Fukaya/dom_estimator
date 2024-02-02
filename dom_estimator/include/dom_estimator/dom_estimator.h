@@ -92,7 +92,10 @@ private:
     std::string MAP_FRAME_ID_;
     bool IS_DEBUG_;
     bool IS_RECORD_;
+    bool IS_OBSERVED_SITUATION_;
+    bool UPDATE_DOM_;
     int HZ_;
+    int RECORD_INTERVAL_;
     double UPDATE_INTERVAL_;
     // double DOM_INTERVAL_;
 };

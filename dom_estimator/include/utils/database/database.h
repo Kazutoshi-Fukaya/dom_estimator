@@ -19,11 +19,14 @@ public:
     // void add_init_object(std::string name,double x,double y);
     // void add_object(std::string name,double x,double y,double time,double credibility);
     void add_init_object(int id,double x,double y);
-    void add_object(int id,double x,double y,double time,double credibility);
+    void add_observed_object(int id,double x,double y,double time,double credibility,double dom);
+    // void add_object(int id,double x,double y,double time,double credibility);
+    void add_object(int id,double x,double y,double time,double credibility,double error);
 
     // update
     void update_objects();
-    void time_update();
+    // void time_update();
+    void time_update(double time);
     void update_dom(double time);
 
     // for debug

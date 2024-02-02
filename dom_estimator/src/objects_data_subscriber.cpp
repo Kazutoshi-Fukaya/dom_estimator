@@ -18,6 +18,6 @@ void ObjectsDataSubscriber::data_callback(const multi_localizer_msgs::ObjectsDat
     data_= *msg;
     for(const auto & data : msg->data){
         // database_->add_object(data.name,data.x,data.y,data.time,data.credibility);
-        database_->add_object(data.id,data.x,data.y,data.time,data.credibility);
+        // database_->add_object(data.id,data.x,data.y,data.time,data.credibility);
     }
 }

@@ -18,12 +18,13 @@ public:
 
     // add
     void add_init_object(double _x,double _y);
-    void add_object(double _x,double _y,double _time,double _credibility);
+    void add_observed_object(double _x,double _y,double _time,double _credibility,double _dom);
+    void add_object(double _x,double _y,double _time,double _credibility,double _error);
     void add_element(double _x,double _y,double _time,double _credibility);
 
     // update
     void update_obejct();
-    void time_update();
+    void time_update(double _time);
     void update_dom(double _time);
 
     double get_distance(double _x,double _y);
@@ -39,15 +40,15 @@ public:
     // init param
     int id;                     // Object ID
     std::string name;           // Object Name (unused?)
-    std::string condition;      // Static or Dynamic
-    bool is_static;             // Static or Dynamic
+    std::string condition;      // Static or Dynamic    (unused)
+    bool is_static;             // Static or Dynamic    (unused)
     double init_dom;            // Init Difficulty of Moving
-    double distance_th;         // if greater than or equal to this value, do not add
+    double distance_th;         // if greater than or equal to this value, do not add   (unused)
 
     // param
-    int observations_count;     // Number of observations
-    int appearance_count;       // Number of appearance (kari)
-    int disappearance_count;    // Number of disappearance (kari)
+    int observations_count;     // Number of observations   (unused)
+    int appearance_count;       // Number of appearance (kari)  (unused)
+    int disappearance_count;    // Number of disappearance (kari)   (unused)
     double total_distance_traveled; // Total distance traveled (m)
     double dom;                 // Difficulty of Moving
 

@@ -3,10 +3,12 @@
 using namespace dom_estimator;
 
 ObjectWithID::ObjectWithID() :
+    has_observed(false), total_distance_traveled(0.0),
     id(-1), name(std::string("")), condition(std::string("")), is_static(NULL), init_dom(0.0), distance_th(0.0),
     observations_count(0), appearance_count(0), disappearance_count(0), dom(0.0) {}
 
 ObjectWithID::ObjectWithID(int _id,std::string _name,std::string _condition,double _init_dom,double _distance_th) :
+    has_observed(false), total_distance_traveled(0.0),
     id(_id), name(_name), condition(_condition), is_static(str_to_bool(condition)), init_dom(_init_dom), distance_th(_distance_th),
     observations_count(0), appearance_count(0), disappearance_count(0), dom(init_dom) {}
 
@@ -20,11 +22,46 @@ void ObjectWithID::add_init_object(double _x,double _y)
     this->emplace_back(Element(time,credibility,x,y));
 }
 
-void ObjectWithID::add_object(double _x, double _y, double _time, double _credibility)
+void ObjectWithID::add_observed_object(double _x, double _y, double _time, double _credibility, double _dom)
 {
     time = _time;
+    has_observed = true;
     x = _x;
     y = _y;
+    credibility = _credibility;
+    dom = _dom;
+    this->emplace_back(Element(_time,_credibility,_x,_y));
+}
+
+// void ObjectWithID::add_object(double _x, double _y, double _time, double _credibility)
+// {
+//     time = _time;
+//     x = _x;
+//     y = _y;
+//     this->emplace_back(Element(_time,_credibility,_x,_y));
+// }
+
+void ObjectWithID::add_object(double _x, double _y, double _time, double _credibility, double _error)
+{
+    time = _time;
+    double diff = get_distance(_x,_y);
+    if(!has_observed){
+        has_observed = true;
+        x = _x;
+        y = _y;
+        credibility = _credibility;
+    }  
+    else if(diff > _error){
+        x = _x;
+        y = _y;
+        credibility = _credibility;
+        total_distance_traveled += diff;
+    }
+    else{
+        x = (x*credibility + _x*_credibility)/(credibility + _credibility);
+        y = (y*credibility + _y*_credibility)/(credibility + _credibility);
+        credibility = (credibility*credibility + _credibility*_credibility)/(credibility + _credibility);
+    }
     this->emplace_back(Element(_time,_credibility,_x,_y));
 }
 
@@ -40,9 +77,8 @@ void ObjectWithID::update_obejct()
     // TODO
 }
 
-void ObjectWithID::time_update()
+void ObjectWithID::time_update(double _time)
 {
-    // TODO
 }
 
 // dom evaluation equation

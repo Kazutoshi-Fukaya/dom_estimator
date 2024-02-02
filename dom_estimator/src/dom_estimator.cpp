@@ -13,6 +13,8 @@ DomEstimator::DomEstimator() :
     private_nh_.param("MAP_FRAME_ID",MAP_FRAME_ID_,{std::string("map")});
     private_nh_.param("IS_DEBUG",IS_DEBUG_,{false});
     private_nh_.param("IS_RECORD",IS_RECORD_,{false});
+    private_nh_.param("IS_OBSERVED_SITUATION",IS_OBSERVED_SITUATION_,{false});
+    private_nh_.param("UPDATE_DOM",UPDATE_DOM_,{true});
     private_nh_.param("HZ",HZ_,{10});
     private_nh_.param("UPDATE_INTERVAL",UPDATE_INTERVAL_,{300.0});
     // private_nh_.param("DOM_INTERVAL",DOM_INTERVAL_,{100.0});
@@ -46,6 +48,8 @@ DomEstimator::~DomEstimator()
         recorder_->set_path(record_path + "dom/");
         recorder_->output_data();
         save_objects(record_path + "objects/" + get_date() + ".csv");
+
+        private_nh_.param("RECORD_INTERVAL",RECORD_INTERVAL_,{300});
     }
 }
 
@@ -53,7 +57,7 @@ void DomEstimator::ops_with_id_callback(const object_identifier_msgs::ObjectPosi
 {
     double time = msg->header.stamp.toSec();
     for(const auto & data : msg->object_positions_with_id){
-        database_->add_object(data.id,data.x,data.y,time,data.probability); //probability = credibility
+        database_->add_object(data.id,data.x,data.y,time,data.probability,data.error); //probability = credibility
     }
 }
 
@@ -125,7 +129,8 @@ void DomEstimator::load_objects()
             double x = static_cast<double>(std::stod(strvec[4]));
             double y = static_cast<double>(std::stod(strvec[5]));
             // database_->add_init_object(name,x,y);   // time = 0.0, credibility = 1.0
-            database_->add_init_object(id,x,y);   // time = 0.0, credibility = 1.0
+            if(IS_OBSERVED_SITUATION_) database_->add_observed_object(id,x,y,time,1.0,dom);
+            else database_->add_init_object(id,x,y);   // time = 0.0, credibility = 1.0
             // std::cout << "load: " << name << std::endl;
             // std::cout << "load id: " << id << std::endl;
         }
@@ -232,7 +237,8 @@ void DomEstimator::save_objects(std::string record_file)
     std::ofstream ofs(record_file);
     for(auto it = database_->begin(); it != database_->end();it++){
         for(auto sit = it->second->begin(); sit != it->second->end(); sit++){
-            ofs << it->second->name.c_str() << ","
+            ofs << it->second->id << ","
+                << it->second->name.c_str() << ","
                 << sit->time << "," 
                 << sit->x <<  "," 
                 << sit->y << std::endl;
@@ -248,7 +254,7 @@ void DomEstimator::update()
 
     // object update (for time)
     if(get_time() > UPDATE_INTERVAL_*(update_count_ + 1)){
-        database_->time_update();
+        database_->time_update(get_time());
         update_count_++;
 
         // delete all markers
@@ -265,7 +271,7 @@ void DomEstimator::update()
         // database_->update_dom(get_time());
         // dom_count_++;
     // }
-    database_->update_dom(get_time());
+    if(UPDATE_DOM_) database_->update_dom(get_time());
 }
 
 void DomEstimator::visualize_object()
@@ -316,7 +322,8 @@ void DomEstimator::publish_object_texts()
     for(auto it = database_->begin(); it != database_->end(); it++){
         if(IS_RECORD_){
             // if(time_count_*30.0 < get_time()){
-            if(time_count_%300 == 0){
+            // if(time_count_%300 == 0){
+            if(time_count_%RECORD_INTERVAL_ == 0){
                 // std::string name = it->first->name;
                 int id = it->second->id;
                 double time = get_time();
@@ -347,25 +354,35 @@ void DomEstimator::publish_object()
     for(auto it = database_->begin(); it != database_->end(); it++){
         // dom
         dom_estimator_msgs::Dom dom;
+        dom.id = it->second->id;
         dom.name = it->second->name;
         dom.dom = it->second->dom;
         dom.object_size = it->second->size();
         dom.appearance_count = it->second->appearance_count;
         dom.disappearance_count = it->second->disappearance_count;
         dom.observations_count = it->second->observations_count;
+        dom.total_distance_traveled = it->second->total_distance_traveled;
         doms.doms.emplace_back(dom);
 
         // object data
-        for(auto sit = it->second->begin(); sit != it->second->end(); sit++){
-            multi_localizer_msgs::ObjectData data;
-            data.id = it->second->id;
-            data.name = it->second->name;
-            data.credibility = sit->credibility;
-            data.time = get_time();
-            data.x = sit->x;
-            data.y = sit->y;
-            object_map.data.emplace_back(data);
-        }
+        // for(auto sit = it->second->begin(); sit != it->second->end(); sit++){
+        //     multi_localizer_msgs::ObjectData data;
+        //     data.id = it->second->id;
+        //     data.name = it->second->name;
+        //     data.credibility = sit->credibility;
+        //     data.time = get_time();
+        //     data.x = sit->x;
+        //     data.y = sit->y;
+        //     object_map.data.emplace_back(data);
+        // }
+        multi_localizer_msgs::ObjectData data;
+        data.id = it->second->id;
+        data.name = it->second->name;
+        data.credibility = it->second->credibility;
+        data.time = get_time();
+        data.x = it->second->x;
+        data.y = it->second->y;
+        object_map.data.emplace_back(data);
     }
     dom_pub_.publish(doms);
     object_map_pub_.publish(object_map);
