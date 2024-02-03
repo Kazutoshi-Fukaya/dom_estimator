@@ -53,6 +53,7 @@ private:
 
     std::string get_date();
     double get_time();
+    double fix_time(ros::Time time);
 
     // callback
     void ops_with_id_callback(const object_identifier_msgs::ObjectPositionsWithIDConstPtr& msg);
@@ -87,6 +88,7 @@ private:
     int update_count_;
     int dom_count_;
     int time_count_;
+    bool get_first_sub_;
 
     // params
     std::string MAP_FRAME_ID_;

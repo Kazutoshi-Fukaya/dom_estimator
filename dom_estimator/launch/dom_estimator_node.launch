@@ -2,26 +2,39 @@
 <launch>
 	<arg name="is_debug"    default="false" />
     <arg name="is_record"   default="false" />
-	<arg name="config_path" default="$(find dom_estimator)/config" />
+    <arg name="is_observed_situation" default="false" />
+    <arg name="update_dom" default="true" />
+    <arg name="update_interval" default="150.0" />
+    <arg name="record_interval" default="300" />
+	<!-- <arg name="config_path" default="$(find dom_estimator)/config" /> -->
+    <arg name="objects_file" default="$(find dom_estimator)/config/init_objects/init_database_dom_test_a.csv" />
+    <arg name="record_path" default="$(find dom_estimator)/record/otameshi/" />
+    <arg name="object_params_file" default="$(find dom_estimator)/config/params/object_params_with_id.yaml" />
 
 	<!-- dom_estimator_node -->
     <node pkg="dom_estimator" type="dom_estimator_node" name="dom_estimator_node" output="screen" >
         <!-- params -->
         <!-- <param name="OBJECTS_FILE"    value="$(arg config_path)/init_objects/20220224.csv" /> -->
-        <!-- <param name="OBJECTS_FILE"    value="$(arg config_path)/init_objects/init_database_small_loop.csv" /> -->
-        <param name="OBJECTS_FILE" value="$(arg config_path)/init_objects/init_database_p01.csv" />
+        <param name="OBJECTS_FILE" value="$(arg objects_file)" />
         <param name="IS_DEBUG"        value="$(arg is_debug)" />
         <param name="HZ"              value="10" />
-        <param name="UPDATE_INTERVAL" value="150.0" />
+        <!-- <param name="UPDATE_INTERVAL" value="150.0" /> -->
+        <param name="UPDATE_INTERVAL" value="$(arg update_interval)" />
+        <param name="IS_OBSERVED_SITUATION" value="$(arg is_observed_situation)" />
+        <param name="UPDATE_DOM" value="$(arg update_dom)" />
 
         <!-- params (for record) -->
         <param name="IS_RECORD"       value="$(arg is_record)" />
-        <param name="RECORD_PATH"     value="$(find dom_estimator)/record/" />
+        <!-- <param name="RECORD_PATH"     value="$(find dom_estimator)/record/" /> -->
+        <param name="RECORD_PATH"     value="$(arg record_path)" />
+        <param name="RECORD_INTERVAL" value="$(arg record_interval)" />
 
         <!-- rosparams -->
         <!-- <rosparam command="load" file="$(arg config_path)/params/object_params.yaml" /> -->
-        <rosparam command="load" file="$(arg config_path)/params/object_params_with_id.yaml" />
-        <rosparam command="load" file="$(arg config_path)/params/robot_element.yaml" />
-    </node>
+        <rosparam command="load" file="$(arg object_params_file)" />
+        <!-- <rosparam command="load" file="$(arg config_path)/params/robot_element.yaml" /> -->
 
+        <!-- remap -->
+        <remap from="ops_with_id_in" to="/object_positions_with_id" />
+    </node>
 </launch>

@@ -6,9 +6,9 @@ DomEstimator::DomEstimator() :
     private_nh_("~"),
     database_(new Database()),
     // objects_data_subs_(new ObjectsDataSubscribers(nh_,private_nh_,database_)),
-    start_time_(ros::Time::now()),
+    // start_time_(ros::Time::now()),
     update_count_(0), dom_count_(0),
-    time_count_(0)
+    time_count_(0), get_first_sub_(false)
 {
     private_nh_.param("MAP_FRAME_ID",MAP_FRAME_ID_,{std::string("map")});
     private_nh_.param("IS_DEBUG",IS_DEBUG_,{false});
@@ -18,6 +18,7 @@ DomEstimator::DomEstimator() :
     private_nh_.param("HZ",HZ_,{10});
     private_nh_.param("UPDATE_INTERVAL",UPDATE_INTERVAL_,{300.0});
     // private_nh_.param("DOM_INTERVAL",DOM_INTERVAL_,{100.0});
+    private_nh_.param("RECORD_INTERVAL",RECORD_INTERVAL_,{300});
 
     if(IS_RECORD_) recorder_ = new DomRecorder();
 
@@ -34,6 +35,8 @@ DomEstimator::DomEstimator() :
     time_pub_ = nh_.advertise<jsk_rviz_plugins::OverlayText>("time",1);
     dom_pub_ = nh_.advertise<dom_estimator_msgs::Doms>("dom",1);
     object_map_pub_ = nh_.advertise<multi_localizer_msgs::ObjectMap>("object_map",1);
+
+    ops_with_id_in_ = nh_.subscribe("ops_with_id_in",1,&DomEstimator::ops_with_id_callback,this);
 }
 
 DomEstimator::~DomEstimator()
@@ -48,16 +51,21 @@ DomEstimator::~DomEstimator()
         recorder_->set_path(record_path + "dom/");
         recorder_->output_data();
         save_objects(record_path + "objects/" + get_date() + ".csv");
-
-        private_nh_.param("RECORD_INTERVAL",RECORD_INTERVAL_,{300});
+        std::cout << "save: " << record_path + "objects/" + get_date() + ".csv" << std::endl;
     }
 }
 
 void DomEstimator::ops_with_id_callback(const object_identifier_msgs::ObjectPositionsWithIDConstPtr& msg)
 {
-    double time = msg->header.stamp.toSec();
+    if(!get_first_sub_){
+        start_time_ = ros::Time::now();
+        get_first_sub_ = true;
+    }  
+    // double time = msg->header.stamp.toSec();
+    double fixed_time = fix_time(msg->header.stamp);
     for(const auto & data : msg->object_positions_with_id){
-        database_->add_object(data.id,data.x,data.y,time,data.probability,data.error); //probability = credibility
+        // database_->add_object(data.id,data.x,data.y,time,data.probability,data.error); //probability = credibility
+        database_->add_object(data.id,data.x,data.y,fixed_time,data.credibility,data.error);
     }
 }
 
@@ -232,17 +240,30 @@ void DomEstimator::setup_time_text()
     time_text_.fg_color = get_color_msg(color_r,color_g,color_b,color_a);
 }
 
+// void DomEstimator::save_objects(std::string record_file)
+// {
+//     std::ofstream ofs(record_file);
+//     for(auto it = database_->begin(); it != database_->end();it++){
+//         for(auto sit = it->second->begin(); sit != it->second->end(); sit++){
+//             ofs << it->second->id << ","
+//                 << it->second->name.c_str() << ","
+//                 << sit->time << "," 
+//                 << sit->x <<  "," 
+//                 << sit->y << std::endl;
+//         }
+//     }
+//     ofs.close();
+// }
+
 void DomEstimator::save_objects(std::string record_file)
 {
     std::ofstream ofs(record_file);
     for(auto it = database_->begin(); it != database_->end();it++){
-        for(auto sit = it->second->begin(); sit != it->second->end(); sit++){
-            ofs << it->second->id << ","
-                << it->second->name.c_str() << ","
-                << sit->time << "," 
-                << sit->x <<  "," 
-                << sit->y << std::endl;
-        }
+        ofs << it->second->id << ","
+            << it->second->name.c_str() << ","
+            << it->second->time << ","
+            << it->second->x <<  ","
+            << it->second->y << std::endl;
     }
     ofs.close();
 }
@@ -271,7 +292,8 @@ void DomEstimator::update()
         // database_->update_dom(get_time());
         // dom_count_++;
     // }
-    if(UPDATE_DOM_) database_->update_dom(get_time());
+    // if(UPDATE_DOM_) database_->update_dom(get_time());
+    if(UPDATE_DOM_) database_->update_dom();
 }
 
 void DomEstimator::visualize_object()
@@ -330,6 +352,7 @@ void DomEstimator::publish_object_texts()
                 double dom = it->second->dom;
                 // recorder_->add_data(name,DomRecord(time,dom));
                 recorder_->add_data(id,DomRecord(time,dom));
+                std::cout << "add to recorder: " << id << std::endl;
                 // time_count_++;
             }
         }
@@ -454,6 +477,8 @@ std::string DomEstimator::get_date()
 }
 
 double DomEstimator::get_time() { return (ros::Time::now() - start_time_).toSec(); }
+
+double DomEstimator::fix_time(ros::Time time) { return (time - start_time_).toSec(); }
 
 void DomEstimator::process()
 {

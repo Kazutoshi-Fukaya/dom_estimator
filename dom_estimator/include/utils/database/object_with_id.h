@@ -25,7 +25,8 @@ public:
     // update
     void update_obejct();
     void time_update(double _time);
-    void update_dom(double _time);
+    // void update_dom(double _time);
+    void update_dom();
 
     double get_distance(double _x,double _y);
 

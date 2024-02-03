@@ -27,7 +27,8 @@ public:
     void update_objects();
     // void time_update();
     void time_update(double time);
-    void update_dom(double time);
+    // void update_dom(double time);
+    void update_dom();
 
     // for debug
     void print_contents();

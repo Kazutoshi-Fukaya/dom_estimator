@@ -79,10 +79,17 @@ void Database::time_update(double time)
     }
 }
 
-void Database::update_dom(double time)
+// void Database::update_dom(double time)
+// {
+//     for(auto it = this->begin(); it != this->end(); it++){
+//         it->second->update_dom(time);
+//     }
+// }
+
+void Database::update_dom()
 {
     for(auto it = this->begin(); it != this->end(); it++){
-        it->second->update_dom(time);
+        it->second->update_dom();
     }
 }
 
