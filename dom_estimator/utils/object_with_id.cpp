@@ -5,12 +5,12 @@ using namespace dom_estimator;
 ObjectWithID::ObjectWithID() :
     has_observed(false), total_distance_traveled(0.0),
     id(-1), name(std::string("")), condition(std::string("")), is_static(NULL), init_dom(0.0), distance_th(0.0),
-    observations_count(0), appearance_count(0), disappearance_count(0), dom(0.0) {}
+    observations_count(0), appearance_count(0), disappearance_count(0), dom(0.0),last_buffer_time(0.0) {}
 
 ObjectWithID::ObjectWithID(int _id,std::string _name,std::string _condition,double _init_dom,double _distance_th) :
     has_observed(false), total_distance_traveled(0.0),
     id(_id), name(_name), condition(_condition), is_static(str_to_bool(condition)), init_dom(_init_dom), distance_th(_distance_th),
-    observations_count(0), appearance_count(0), disappearance_count(0), dom(init_dom) {}
+    observations_count(0), appearance_count(0), disappearance_count(0), dom(init_dom),last_buffer_time(0.0) {}
 
 void ObjectWithID::add_init_object(double _x,double _y)
 {
@@ -42,6 +42,35 @@ void ObjectWithID::add_observed_object(double _x, double _y, double _time, doubl
 // }
 
 void ObjectWithID::add_object(double _x, double _y, double _time, double _credibility, double _error)
+{
+    int buffer_max_size = 5;
+    double buffer_time = 30.0;
+
+    if(_time - last_buffer_time > buffer_time){
+        buffer_elements.clear();
+    }
+    last_buffer_time = _time;
+
+    buffer_elements.emplace_back(Element(_time,_credibility,_x,_y));
+    if(buffer_elements.size() >= buffer_max_size){
+        double sum_x = 0.0;
+        double sum_y = 0.0;
+        double sum_credibility = 0.0;
+        for(auto it = buffer_elements.begin(); it != buffer_elements.end(); it++){
+            sum_x += it->x;
+            sum_y += it->y;
+            sum_credibility += it->credibility;
+        }
+        double smoothed_x = sum_x/buffer_elements.size();
+        double smoothed_y = sum_y/buffer_elements.size();
+        double smoothed_credibility = sum_credibility/buffer_elements.size();
+        buffer_elements.clear();
+
+        add_smoothed_object(smoothed_x,smoothed_y,_time,smoothed_credibility,_error);
+    } 
+}
+
+void ObjectWithID::add_smoothed_object(double _x, double _y, double _time, double _credibility, double _error)
 {
     time = _time;
     double diff = get_distance(_x,_y);

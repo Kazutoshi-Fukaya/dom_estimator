@@ -20,6 +20,7 @@ public:
     void add_init_object(double _x,double _y);
     void add_observed_object(double _x,double _y,double _time,double _credibility,double _dom);
     void add_object(double _x,double _y,double _time,double _credibility,double _error);
+    void add_smoothed_object(double _x,double _y,double _time,double _credibility,double _error);
     void add_element(double _x,double _y,double _time,double _credibility);
 
     // update
@@ -37,6 +38,9 @@ public:
 
     // buffer objects
     // BufferObject* buffer_object_;
+
+    std::vector<Element> buffer_elements;
+    double last_buffer_time;
 
     // init param
     int id;                     // Object ID
