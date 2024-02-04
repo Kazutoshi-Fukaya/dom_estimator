@@ -16,9 +16,13 @@ public:
         time(0.0), dom(0.0) {}
     DomRecord(double _time,double _dom) :
         time(_time), dom(_dom) {}
+    DomRecord(double _time,double _dom,double _credibility,double _distance) :
+        time(_time), dom(_dom), credibility(_credibility), distance(_distance) {}
 
     double time;
     double dom;
+    double credibility;
+    double distance;
 
 private:
 };
@@ -56,7 +60,8 @@ public:
             std::string file_name = RECORD_PATH_ + std::to_string(it->first) + ".csv";
             std::ofstream ofs(file_name);
             for(auto sit = it->second.begin(); sit != it->second.end(); sit++){
-                ofs << sit->time << "," << sit->dom << std::endl;
+                // ofs << sit->time << "," << sit->dom << std::endl;
+                ofs << sit->time << "," << sit->dom << "," << sit->credibility << "," << sit->distance << std::endl;
             }
             ofs.close();
         }

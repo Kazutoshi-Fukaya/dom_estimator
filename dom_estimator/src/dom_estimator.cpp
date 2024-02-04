@@ -351,7 +351,8 @@ void DomEstimator::publish_object_texts()
                 double time = get_time();
                 double dom = it->second->dom;
                 // recorder_->add_data(name,DomRecord(time,dom));
-                recorder_->add_data(id,DomRecord(time,dom));
+                // recorder_->add_data(id,DomRecord(time,dom));
+                recorder_->add_data(id,DomRecord(time,dom,it->second->credibility,it->second->total_distance_traveled));
                 std::cout << "add to recorder: " << id << std::endl;
                 // time_count_++;
             }
