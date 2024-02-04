@@ -404,6 +404,7 @@ void DomEstimator::publish_object()
         data.name = it->second->name;
         data.credibility = it->second->credibility;
         data.time = get_time();
+        data.dom = it->second->dom;
         data.x = it->second->x;
         data.y = it->second->y;
         object_map.data.emplace_back(data);
