@@ -145,7 +145,8 @@ void ObjectWithID::time_update(double _time)
 
 void ObjectWithID::update_dom()
 {
-    double coef = 1.0;
+    // double coef = 1.0;
+    double coef = 5.0;
     double s = total_distance_traveled/(time/60.0); // speed
     dom = 1.0 - std::exp(-s*coef);
 }
