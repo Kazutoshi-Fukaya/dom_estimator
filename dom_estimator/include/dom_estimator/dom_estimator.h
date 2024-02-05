@@ -89,6 +89,7 @@ private:
     int dom_count_;
     int time_count_;
     bool get_first_sub_;
+    bool get_valid_time_;
 
     // params
     std::string MAP_FRAME_ID_;

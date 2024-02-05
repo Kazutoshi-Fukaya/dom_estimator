@@ -6,9 +6,9 @@ DomEstimator::DomEstimator() :
     private_nh_("~"),
     database_(new Database()),
     // objects_data_subs_(new ObjectsDataSubscribers(nh_,private_nh_,database_)),
-    // start_time_(ros::Time::now()),
+    start_time_(ros::Time::now()),
     update_count_(0), dom_count_(0),
-    time_count_(0), get_first_sub_(false)
+    time_count_(0), get_first_sub_(false), get_valid_time_(false)
 {
     private_nh_.param("MAP_FRAME_ID",MAP_FRAME_ID_,{std::string("map")});
     private_nh_.param("IS_DEBUG",IS_DEBUG_,{false});
@@ -57,10 +57,6 @@ DomEstimator::~DomEstimator()
 
 void DomEstimator::ops_with_id_callback(const object_identifier_msgs::ObjectPositionsWithIDConstPtr& msg)
 {
-    if(!get_first_sub_){
-        start_time_ = ros::Time::now();
-        get_first_sub_ = true;
-    }  
     // double time = msg->header.stamp.toSec();
     double fixed_time = fix_time(msg->header.stamp);
     for(const auto & data : msg->object_positions_with_id){
@@ -487,6 +483,12 @@ void DomEstimator::process()
     std::cout << "=== Main Process ===" << std::endl;
     ros::Rate rate(HZ_);
     while(ros::ok()){
+        std::cout << "now time: " << ros::Time::now() << "start time: " << start_time_ << std::endl;
+        std::cout << "get time: " << get_time() << std::endl;
+        if(!get_valid_time_ && ros::Time::now().isValid()){
+            start_time_ = ros::Time::now();
+            get_valid_time_ = true;
+        }
         publish_msg();  // publish msg
         update();       // update
         ros::spinOnce();
